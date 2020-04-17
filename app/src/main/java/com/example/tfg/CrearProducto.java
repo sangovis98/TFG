@@ -34,6 +34,8 @@ public class CrearProducto extends AppCompatActivity {
     private int nProductos;
     private DiaDieta diaDieta;
     private ArrayList<Producto> productosDieta;
+    private Intent i;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +61,7 @@ public class CrearProducto extends AppCompatActivity {
         btnAddProducto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                i = new Intent(getApplicationContext(), DiaDietaActivity.class);
                 p = new Producto(nProductos + 1 ,etNombreProducto.getText().toString(), Double.parseDouble(etProteinas.getText().toString()), Double.parseDouble(etHidratos.getText().toString()), Double.parseDouble(etGrasas.getText().toString()));
 
                 //Añadimos a lista general de productos
@@ -74,10 +77,22 @@ public class CrearProducto extends AppCompatActivity {
                         .document(diaDieta.getnDia())
                         .set(map, SetOptions.merge());
 
-                Intent i = new Intent(getApplicationContext(), DiaDietaActivity.class);
-                i.putExtra("dieta", diaDieta);
-                i.putExtra("dietas", productosDieta);
-                startActivity(i);
+                //Recogemos el alimento de la base de datos y pasamos por el bundle
+                db.collection("usuarios")
+                        .document("KVNZAq8vBvgCB4pP4iJv")
+                        .collection("diasDietas")
+                        .document(diaDieta.getnDia())
+                        .get()
+                        .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                //Obtenemos la lista de prductos dentro de la dieta
+                                productosDieta = documentSnapshot.toObject(DiaDieta.class).getProductos();
+                                i.putExtra("dietas", productosDieta);
+                                i.putExtra("dieta", diaDieta);
+                                startActivity(i);
+                            }
+                        });
             }
         });
     }

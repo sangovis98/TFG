@@ -51,9 +51,6 @@ public class ListaProductosActivity extends AppCompatActivity implements OnItemL
         setContentView(R.layout.activity_lista_productos);
 
         db = FirebaseFirestore.getInstance();
-        recyclerView = findViewById(R.id.listaProductos);
-
-        obtenerDiaDieta();
 
         productos = new ArrayList<>();
         db.collection("productos")
@@ -101,7 +98,14 @@ public class ListaProductosActivity extends AppCompatActivity implements OnItemL
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        obtenerDiaDieta();
+    }
+
     public void initRecylerView(){
+        recyclerView = findViewById(R.id.listaProductos);
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);

@@ -45,12 +45,7 @@ public class DiaDietaActivity extends AppCompatActivity implements OnItemListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dia_dieta);
 
-        obtenerDiaDieta();
-
         db = FirebaseFirestore.getInstance();
-        recyclerView = findViewById(R.id.listaProductos);
-
-        initRecylerView();
 
         imageView = findViewById(R.id.ivAddProductoDieta);
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +59,15 @@ public class DiaDietaActivity extends AppCompatActivity implements OnItemListene
         });
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        obtenerDiaDieta();
+        initRecylerView();
+    }
+
     public void initRecylerView(){
+        recyclerView = findViewById(R.id.listaProductos);
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
