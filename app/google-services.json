@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "171593525110",
+    "firebase_url": "https://tfgfit-ebe70.firebaseio.com",
+    "project_id": "tfgfit-ebe70",
+    "storage_bucket": "tfgfit-ebe70.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:171593525110:android:5ae684c6eb330ee2db3c57",
+        "android_client_info": {
+          "package_name": "com.example.tfg"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "171593525110-f48rn1o5sbhfq5sion0p49u2ufi9e8g0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tfg",
+            "certificate_hash": "97f04a22346dc8372935ea11ca9b6f6e34733595"
+          }
+        },
+        {
+          "client_id": "171593525110-ac4mlddt38k4hj53aikhoj7p2l4533lp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDukjUwlC49qKB_h3yD6wPiWotdpWdyYTM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "171593525110-ac4mlddt38k4hj53aikhoj7p2l4533lp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
