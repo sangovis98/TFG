@@ -91,6 +91,7 @@ public class CrearProducto extends AppCompatActivity {
                                 i.putExtra("dietas", productosDieta);
                                 i.putExtra("dieta", diaDieta);
                                 startActivity(i);
+                                finish();
                             }
                         });
             }

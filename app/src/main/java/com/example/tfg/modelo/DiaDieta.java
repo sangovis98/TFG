@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 
 public class DiaDieta implements Parcelable {
+
+    private int id;
     private String nDia;
     private int calorias;
     private double proteinas;
@@ -15,7 +17,8 @@ public class DiaDieta implements Parcelable {
 
     public DiaDieta() {}
 
-    public DiaDieta(String nDia, int calorias, double proteinas, double hidratos, double grasas, ArrayList<Producto> productos) {
+    public DiaDieta(int id, String nDia, int calorias, double proteinas, double hidratos, double grasas, ArrayList<Producto> productos) {
+        this.id = id;
         this.nDia = nDia;
         this.calorias = calorias;
         this.proteinas = proteinas;
@@ -25,11 +28,13 @@ public class DiaDieta implements Parcelable {
     }
 
     protected DiaDieta(Parcel in) {
+        id = in.readInt();
         nDia = in.readString();
         calorias = in.readInt();
         proteinas = in.readDouble();
         hidratos = in.readDouble();
         grasas = in.readDouble();
+        productos = in.createTypedArrayList(Producto.CREATOR);
     }
 
     public static final Creator<DiaDieta> CREATOR = new Creator<DiaDieta>() {
@@ -43,6 +48,14 @@ public class DiaDieta implements Parcelable {
             return new DiaDieta[size];
         }
     };
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getnDia() {
         return nDia;
@@ -99,10 +112,12 @@ public class DiaDieta implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
         dest.writeString(nDia);
         dest.writeInt(calorias);
         dest.writeDouble(proteinas);
         dest.writeDouble(hidratos);
         dest.writeDouble(grasas);
+        dest.writeTypedList(productos);
     }
 }

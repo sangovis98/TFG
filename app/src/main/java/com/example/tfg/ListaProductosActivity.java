@@ -19,6 +19,7 @@ import com.example.tfg.interfaces.OnItemListener;
 import com.example.tfg.modelo.DiaDieta;
 import com.example.tfg.modelo.Producto;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -138,21 +139,42 @@ public class ListaProductosActivity extends AppCompatActivity implements OnItemL
     @Override
     public void onItemClick(int position) {
 
-        n = productosDiaDieta.size();
-        p = new Producto(n+1, listaFiltrada.get(position).getNombre(), listaFiltrada.get(position).getProteinas(), listaFiltrada.get(position).getHidratos(), listaFiltrada.get(position).getGrasas());
+        if (productosDiaDieta == null){
+            n = 0;
+        }else {
+            n = productosDiaDieta.size();
+        }
 
+        p = new Producto(n+1, listaFiltrada.get(position).getNombre(), listaFiltrada.get(position).getProteinas(), listaFiltrada.get(position).getHidratos(), listaFiltrada.get(position).getGrasas());
+        //Añade este producto dentro del arraylist productos en la base de datos
         Map<String, Object> map = new HashMap<>();
         map.put("productos", FieldValue.arrayUnion(p));
 
         db.collection("usuarios")
                 .document("KVNZAq8vBvgCB4pP4iJv")
                 .collection("diasDietas")
-                .document(diaDieta.getnDia()).set(map, SetOptions.merge());
+                .document(diaDieta.getnDia())
+                .set(map, SetOptions.merge());
 
-        Intent i = new Intent(getApplicationContext(), DiaDietaActivity.class);
-        i.putExtra("dieta", diaDieta);
-        i.putExtra("dietas", productosDiaDieta);
-        startActivity(i);
+        db.collection("usuarios")
+                .document("KVNZAq8vBvgCB4pP4iJv")
+                .collection("diasDietas")
+                .document(diaDieta.getnDia())
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Intent i = new Intent(getApplicationContext(), DiaDietaActivity.class);
+                        productosDiaDieta = documentSnapshot.toObject(DiaDieta.class).getProductos();
+                        i.putExtra("dieta", diaDieta);
+                        i.putExtra("dietas", productosDiaDieta);
+                        startActivity(i);
+                    }
+                });
+
+
+
+
     }
 
 }

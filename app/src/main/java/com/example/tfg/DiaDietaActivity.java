@@ -12,8 +12,10 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.tfg.adapters.AdapterProductos;
+import com.example.tfg.fragments.ListaDietasFragment;
 import com.example.tfg.interfaces.OnItemListener;
 import com.example.tfg.modelo.DiaDieta;
 import com.example.tfg.modelo.Producto;
@@ -71,8 +73,12 @@ public class DiaDietaActivity extends AppCompatActivity implements OnItemListene
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        adapterProductos = new AdapterProductos(productosDiaDieta, this);
-        recyclerView.setAdapter(adapterProductos);
+        if (productosDiaDieta == null){
+            Toast.makeText(getApplicationContext(), "Su dieta no tiene productos", Toast.LENGTH_SHORT).show();
+        }else {
+            adapterProductos = new AdapterProductos(productosDiaDieta, this);
+            recyclerView.setAdapter(adapterProductos);
+        }
     }
 
     @Override
@@ -89,6 +95,12 @@ public class DiaDietaActivity extends AppCompatActivity implements OnItemListene
         diaDieta = getIntent().getParcelableExtra("dieta");
         productosDiaDieta = getIntent().getParcelableArrayListExtra("dietas");
         diaDieta.setProductos(productosDiaDieta);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(getApplicationContext(), MainActivity.class));
     }
 }
 
