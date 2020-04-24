@@ -44,6 +44,9 @@ public class AdapterProductos extends RecyclerView.Adapter<AdapterProductos.View
         holder.pbProteinas.setProgress((int) ((listItems.get(position).getProteinas() * 100) / total));
         holder.pbHidratos.setProgress((int) ((listItems.get(position).getHidratos() * 100) / total));
         holder.pbGrasas.setProgress((int) ((listItems.get(position).getGrasas() * 100) / total));
+        holder.txtItemPProteinas.setText(String.valueOf(listItems.get(position).getProteinas()));
+        holder.txtItemPHidratos.setText(String.valueOf(listItems.get(position).getHidratos()));
+        holder.txtItemPGrasas.setText(String.valueOf(listItems.get(position).getGrasas()));
     }
 
     @Override
@@ -53,7 +56,7 @@ public class AdapterProductos extends RecyclerView.Adapter<AdapterProductos.View
 
     public class ViewHolderProductos extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView tvNombre;
+        TextView tvNombre, txtItemPProteinas, txtItemPHidratos, txtItemPGrasas;
         ImageView ivProducto;
         ProgressBar pbProteinas;
         ProgressBar pbHidratos;
@@ -67,6 +70,9 @@ public class AdapterProductos extends RecyclerView.Adapter<AdapterProductos.View
             pbHidratos = itemView.findViewById(R.id.pbItemHidratos);
             pbGrasas = itemView.findViewById(R.id.pbItemGrasas);
             ivProducto = itemView.findViewById(R.id.ivItemProducto);
+            txtItemPProteinas = itemView.findViewById(R.id.txtItemPProteinas);
+            txtItemPHidratos = itemView.findViewById(R.id.txtItemPHidratos);
+            txtItemPGrasas = itemView.findViewById(R.id.txtItemPGrasas);
             itemView.setOnClickListener(this);
         }
 

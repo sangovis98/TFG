@@ -12,6 +12,7 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.tfg.adapters.AdapterProductos;
@@ -39,6 +40,7 @@ public class DiaDietaActivity extends AppCompatActivity implements OnItemListene
     private DiaDieta diaDieta;
     private ArrayList<DiaDieta> dietasDias;
     private ImageView imageView;
+    private TextView txtNombreDiaDieta;
 
     LinearLayoutManager linearLayoutManager;
 
@@ -48,6 +50,8 @@ public class DiaDietaActivity extends AppCompatActivity implements OnItemListene
         setContentView(R.layout.activity_dia_dieta);
 
         db = FirebaseFirestore.getInstance();
+
+        txtNombreDiaDieta = findViewById(R.id.txtNombreDiaDieta);
 
         imageView = findViewById(R.id.ivAddProductoDieta);
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -66,6 +70,7 @@ public class DiaDietaActivity extends AppCompatActivity implements OnItemListene
         super.onStart();
         obtenerDiaDieta();
         initRecylerView();
+        txtNombreDiaDieta.setText(diaDieta.getnDia());
     }
 
     public void initRecylerView(){

@@ -13,13 +13,13 @@
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.tfg.fragments.EatFragment"
+        android:name="com.example.tfg.fragments.ListaEntrenosFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_lista_entrenos" />
 
     <fragment
         android:id="@+id/navigation_notifications"
-        android:name="com.example.tfg.fragments.TrainFragment"
+        android:name="com.example.tfg.fragments.PerfilFragment"
         android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        tools:layout="@layout/fragment_perfil" />
 </navigation>

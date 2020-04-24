@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">TFG</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_home">Dietas</string>
+    <string name="title_dashboard">Ejercicios</string>
+    <string name="title_notifications">Perfil</string>
 </resources>

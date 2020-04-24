@@ -12,10 +12,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".CrearProducto"></activity>
+        <activity android:name=".DocumentarEjercicioActivity"></activity>
+        <activity android:name=".ListaEjerciciosActivity" />
+        <activity android:name=".ListaEjerciciosDiaSemanaActivity" />
+        <activity android:name=".CrearProducto" />
         <activity android:name=".ListaProductosActivity" />
         <activity android:name=".ProductoActivity" />
         <activity android:name=".DiaDietaActivity" />
+        <activity android:name=".DiasSemanaEntrenosActivity" />
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name">

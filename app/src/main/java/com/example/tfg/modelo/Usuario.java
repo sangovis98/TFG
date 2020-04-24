@@ -6,14 +6,12 @@ public class Usuario {
     private String nombre;
     private String pass;
     private String correo;
-    ArrayList<DiaEntreno> entrenos;
     ArrayList<DiaDieta> dietas;
 
-    public Usuario(String nombre, String pass, String correo, ArrayList<DiaEntreno> entrenos, ArrayList<DiaDieta> dietas) {
+    public Usuario(String nombre, String pass, String correo, ArrayList<DiaDieta> dietas) {
         this.nombre = nombre;
         this.pass = pass;
         this.correo = correo;
-        this.entrenos = entrenos;
         this.dietas = dietas;
     }
 
@@ -39,14 +37,6 @@ public class Usuario {
 
     public void setCorreo(String correo) {
         this.correo = correo;
-    }
-
-    public ArrayList<DiaEntreno> getEntrenos() {
-        return entrenos;
-    }
-
-    public void setEntrenos(ArrayList<DiaEntreno> entrenos) {
-        this.entrenos = entrenos;
     }
 
     public ArrayList<DiaDieta> getDietas() {

@@ -4,41 +4,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ProductoActivity">
+    tools:context=".DocumentarEjercicioActivity">
 
-    <TextView
-        android:id="@+id/txtProductoNombre"
+    <EditText
+        android:id="@+id/etNombreEjercicio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="176dp"
-        android:layout_marginTop="172dp"
-        android:layout_marginEnd="176dp"
-        android:text="TextView"
-        android:textSize="22sp"
+        android:layout_marginTop="92dp"
+        android:ems="10"
+        android:hint="Nombre ejercicio"
+        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editText"
+    <Spinner
+        android:id="@+id/sGrupoMuscular"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="49dp"
-        android:ems="10"
-        android:hint="Cantidad"
-        android:inputType="textPersonName"
+        android:layout_marginTop="32dp"
+        android:spinnerMode="dropdown"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.727"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtProductoNombre" />
+        app:layout_constraintTop_toBottomOf="@+id/etNombreEjercicio" />
 
-    <ImageView
-        android:id="@+id/btnProductoAdd"
+    <Button
+        android:id="@+id/btnDocumentarEjercicio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="32dp"
+        android:text="Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText"
-        app:srcCompat="@android:drawable/ic_menu_add" />
-
+        app:layout_constraintTop_toBottomOf="@+id/sGrupoMuscular" />
 </androidx.constraintlayout.widget.ConstraintLayout>

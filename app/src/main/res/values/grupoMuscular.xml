@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="gm">
+        <item>Pecho</item>
+        <item>Espalda</item>
+        <item>Piernas</item>
+        <item>Hombro</item>
+        <item>Brazos</item>
+        <item>Pantorrillas</item>
+    </string-array>
+</resources>

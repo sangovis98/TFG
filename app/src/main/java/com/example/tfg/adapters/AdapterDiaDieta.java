@@ -3,19 +3,15 @@ package com.example.tfg.adapters;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.tfg.R;
 import com.example.tfg.interfaces.OnItemListener;
 import com.example.tfg.modelo.DiaDieta;
 import com.example.tfg.modelo.Producto;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 
 public class AdapterDiaDieta extends RecyclerView.Adapter<AdapterDiaDieta.ViewHolderDiaDieta>{
@@ -39,12 +35,25 @@ public class AdapterDiaDieta extends RecyclerView.Adapter<AdapterDiaDieta.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull AdapterDiaDieta.ViewHolderDiaDieta holder, int position) {
-        total = listItems.get(position).getProteinas() + listItems.get(position).getHidratos() + listItems.get(position).getGrasas();
+
+        double proteinas = 0, hidratos = 0, grasas = 0;
+
+        if (listItems.get(position).getProductos() != null){
+            for (Producto p : listItems.get(position).getProductos()){
+                proteinas += p.getProteinas();
+                hidratos += p.getHidratos();
+                grasas += p.getGrasas();
+            }
+        }
+
         holder.txtNombreDiaDieta.setText(listItems.get(position).getnDia());
-        holder.txtProteinasDiaDieta.setText(String.valueOf(listItems.get(position).getProteinas()));
-        holder.txtHidratosDiaDieta.setText(String.valueOf(listItems.get(position).getHidratos()));
-        holder.txtGrasasDiaDieta.setText(String.valueOf(listItems.get(position).getGrasas()));
-        
+        holder.txtProteinasDiaDieta.setText(String.format("%.2f", proteinas));
+        holder.txtHidratosDiaDieta.setText(String.format("%.2f", hidratos));
+        holder.txtGrasasDiaDieta.setText(String.format("%.2f", grasas));
+        holder.pbProteinas.setProgress((int) proteinas);
+        holder.pbHidratos.setProgress((int) hidratos);
+        holder.pbGrasas.setProgress((int) grasas);
+        holder.txtItemDiaDietaCalorias.setText(String.valueOf((int) (proteinas + hidratos + grasas)));
     }
 
     @Override
@@ -70,6 +79,9 @@ public class AdapterDiaDieta extends RecyclerView.Adapter<AdapterDiaDieta.ViewHo
             txtHidratosDiaDieta = itemView.findViewById(R.id.txtItemDiaDietaHidratos);
             txtGrasasDiaDieta = itemView.findViewById(R.id.txtItemDiaDietaGrasas);
             txtItemDiaDietaCalorias = itemView.findViewById(R.id.txtItemDiaDietaCalorias);
+            pbProteinas = itemView.findViewById(R.id.pbProteinas);
+            pbHidratos = itemView.findViewById(R.id.pbHidratos);
+            pbGrasas = itemView.findViewById(R.id.pbGrasas);
             itemView.setOnClickListener(this);
         }
 
