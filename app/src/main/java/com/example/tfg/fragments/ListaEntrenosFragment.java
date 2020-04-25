@@ -102,7 +102,7 @@ public class ListaEntrenosFragment extends Fragment implements OnItemListener {
                             }
                         }
                         //Creamos entreno semanal
-                        entrenoSemana = new EntrenoSemana(entrenosSemanales.size() + 1, nombreDialog, 0, null);
+                        entrenoSemana = new EntrenoSemana(entrenosSemanales.size() + 1, nombreDialog, null);
                         db.collection("usuarios")
                                 .document("KVNZAq8vBvgCB4pP4iJv")
                                 .collection("entrenosSemanales")

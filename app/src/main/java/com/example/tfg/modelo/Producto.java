@@ -10,15 +10,17 @@ public class Producto implements Parcelable{
     private double proteinas;
     private double hidratos;
     private double grasas;
+    private String img;
 
     public Producto() {}
 
-    public Producto(int id, String nombre, double proteinas, double hidratos, double grasas) {
+    public Producto(int id, String nombre, double proteinas, double hidratos, double grasas, String img) {
         this.id = id;
         this.nombre = nombre;
         this.proteinas = proteinas;
         this.hidratos = hidratos;
         this.grasas = grasas;
+        this.img = img;
     }
 
     protected Producto(Parcel in) {
@@ -27,6 +29,7 @@ public class Producto implements Parcelable{
         proteinas = in.readDouble();
         hidratos = in.readDouble();
         grasas = in.readDouble();
+        img = in.readString();
     }
 
     public static final Creator<Producto> CREATOR = new Creator<Producto>() {
@@ -81,6 +84,14 @@ public class Producto implements Parcelable{
         this.grasas = grasas;
     }
 
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -93,5 +104,6 @@ public class Producto implements Parcelable{
         dest.writeDouble(proteinas);
         dest.writeDouble(hidratos);
         dest.writeDouble(grasas);
+        dest.writeString(img);
     }
 }

@@ -62,13 +62,13 @@ public class CrearProducto extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 i = new Intent(getApplicationContext(), DiaDietaActivity.class);
-                p = new Producto(nProductos + 1 ,etNombreProducto.getText().toString(), Double.parseDouble(etProteinas.getText().toString()), Double.parseDouble(etHidratos.getText().toString()), Double.parseDouble(etGrasas.getText().toString()));
+                p = new Producto(nProductos + 1 ,etNombreProducto.getText().toString(), Double.parseDouble(etProteinas.getText().toString()), Double.parseDouble(etHidratos.getText().toString()), Double.parseDouble(etGrasas.getText().toString()), "");
 
                 //Añadimos a lista general de productos
                 db.collection("productos").add(p);
 
                 //Añadimos el producto a nuestra dieta
-                p = new Producto(productosDieta.size()+1, etNombreProducto.getText().toString(), Double.parseDouble(etProteinas.getText().toString()), Double.parseDouble(etHidratos.getText().toString()), Double.parseDouble(etGrasas.getText().toString()));
+                p = new Producto(productosDieta.size()+1, etNombreProducto.getText().toString(), Double.parseDouble(etProteinas.getText().toString()), Double.parseDouble(etHidratos.getText().toString()), Double.parseDouble(etGrasas.getText().toString()), "");
                 Map<String, Object> map = new HashMap<>();
                 map.put("productos", FieldValue.arrayUnion(p));
                 db.collection("usuarios")

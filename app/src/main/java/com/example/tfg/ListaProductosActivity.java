@@ -145,7 +145,7 @@ public class ListaProductosActivity extends AppCompatActivity implements OnItemL
             n = productosDiaDieta.size();
         }
 
-        p = new Producto(n+1, listaFiltrada.get(position).getNombre(), listaFiltrada.get(position).getProteinas(), listaFiltrada.get(position).getHidratos(), listaFiltrada.get(position).getGrasas());
+        p = new Producto(n+1, listaFiltrada.get(position).getNombre(), listaFiltrada.get(position).getProteinas(), listaFiltrada.get(position).getHidratos(), listaFiltrada.get(position).getGrasas(), listaFiltrada.get(position).getImg());
         //Añade este producto dentro del arraylist productos en la base de datos
         Map<String, Object> map = new HashMap<>();
         map.put("productos", FieldValue.arrayUnion(p));

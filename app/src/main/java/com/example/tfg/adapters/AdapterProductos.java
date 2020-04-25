@@ -40,13 +40,18 @@ public class AdapterProductos extends RecyclerView.Adapter<AdapterProductos.View
     public void onBindViewHolder(@NonNull AdapterProductos.ViewHolderProductos holder, int position) {
         total = listItems.get(position).getProteinas() + listItems.get(position).getHidratos() + listItems.get(position).getGrasas();
         holder.tvNombre.setText(listItems.get(position).getNombre());
-        Picasso.get().load(R.drawable.descarga).into(holder.ivProducto);
         holder.pbProteinas.setProgress((int) ((listItems.get(position).getProteinas() * 100) / total));
         holder.pbHidratos.setProgress((int) ((listItems.get(position).getHidratos() * 100) / total));
         holder.pbGrasas.setProgress((int) ((listItems.get(position).getGrasas() * 100) / total));
         holder.txtItemPProteinas.setText(String.valueOf(listItems.get(position).getProteinas()));
         holder.txtItemPHidratos.setText(String.valueOf(listItems.get(position).getHidratos()));
         holder.txtItemPGrasas.setText(String.valueOf(listItems.get(position).getGrasas()));
+        if (listItems.get(position).getImg().equals("")){
+            Picasso.get().load(R.drawable.descarga).into(holder.ivProducto);
+        }else {
+            Picasso.get().load(listItems.get(position).getImg()).into(holder.ivProducto);
+        }
+
     }
 
     @Override
@@ -69,7 +74,6 @@ public class AdapterProductos extends RecyclerView.Adapter<AdapterProductos.View
             pbProteinas = itemView.findViewById(R.id.pbItemProteinas);
             pbHidratos = itemView.findViewById(R.id.pbItemHidratos);
             pbGrasas = itemView.findViewById(R.id.pbItemGrasas);
-            ivProducto = itemView.findViewById(R.id.ivItemProducto);
             txtItemPProteinas = itemView.findViewById(R.id.txtItemPProteinas);
             txtItemPHidratos = itemView.findViewById(R.id.txtItemPHidratos);
             txtItemPGrasas = itemView.findViewById(R.id.txtItemPGrasas);

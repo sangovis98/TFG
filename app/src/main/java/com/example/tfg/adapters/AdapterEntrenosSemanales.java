@@ -34,7 +34,6 @@ public class AdapterEntrenosSemanales extends RecyclerView.Adapter<AdapterEntren
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolderEntrenoDieta holder, int position) {
-        holder.nKalEntreno.setText(String.valueOf(listItems.get(position).getGastoCalorico()));
         holder.nEntreno.setText(listItems.get(position).getNombre());
     }
 
@@ -45,11 +44,10 @@ public class AdapterEntrenosSemanales extends RecyclerView.Adapter<AdapterEntren
 
     public class ViewHolderEntrenoDieta extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView nKalEntreno, nEntreno;
+        TextView nEntreno;
 
         public ViewHolderEntrenoDieta(@NonNull View itemView, OnItemListener onEntrenoSemanalListener) {
             super(itemView);
-            nKalEntreno = itemView.findViewById(R.id.nKcalEntreno);
             nEntreno = itemView.findViewById(R.id.nEntreno);
             itemView.setOnClickListener(this);
         }

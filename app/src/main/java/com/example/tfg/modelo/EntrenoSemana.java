@@ -9,23 +9,32 @@ public class EntrenoSemana implements Parcelable {
 
     private int id;
     private String nombre;
-    private int gastoCalorico;
     private ArrayList<Ejercicio> ejEntrenoSemanal;
 
     public EntrenoSemana() {}
 
-    public EntrenoSemana(int id, String nombre, int gastoCalorico, ArrayList<Ejercicio> ejEntrenoSemanal) {
+    public EntrenoSemana(int id, String nombre, ArrayList<Ejercicio> ejEntrenoSemanal) {
         this.id = id;
         this.nombre = nombre;
-        this.gastoCalorico = gastoCalorico;
         this.ejEntrenoSemanal = ejEntrenoSemanal;
     }
 
     protected EntrenoSemana(Parcel in) {
         id = in.readInt();
         nombre = in.readString();
-        gastoCalorico = in.readInt();
         ejEntrenoSemanal = in.createTypedArrayList(Ejercicio.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(nombre);
+        dest.writeTypedList(ejEntrenoSemanal);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<EntrenoSemana> CREATOR = new Creator<EntrenoSemana>() {
@@ -56,32 +65,11 @@ public class EntrenoSemana implements Parcelable {
         this.nombre = nombre;
     }
 
-    public int getGastoCalorico() {
-        return gastoCalorico;
-    }
-
-    public void setGastoCalorico(int gastoCalorico) {
-        this.gastoCalorico = gastoCalorico;
-    }
-
     public ArrayList<Ejercicio> getEjEntrenoSemanal() {
         return ejEntrenoSemanal;
     }
 
     public void setEjEntrenoSemanal(ArrayList<Ejercicio> ejEntrenoSemanal) {
         this.ejEntrenoSemanal = ejEntrenoSemanal;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(nombre);
-        dest.writeInt(gastoCalorico);
-        dest.writeTypedList(ejEntrenoSemanal);
     }
 }

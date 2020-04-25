@@ -23,7 +23,7 @@ public class DiasSemanaEntrenosActivity extends AppCompatActivity {
     private ArrayList<Ejercicio> ejerciciosSemana;
     private FirebaseFirestore db;
     private CardView l,m,x,j,v,s,d;
-    private TextView grupoL, grupoM, grupoX, grupoJ, grupoV, grupoS, grupoD;
+    private TextView grupoL, grupoM, grupoX, grupoJ, grupoV, grupoS, grupoD, ndietaDia;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +33,9 @@ public class DiasSemanaEntrenosActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         obtenerBundle();
+
+        ndietaDia = findViewById(R.id.ndietaDia);
+        ndietaDia.setText(entrenoSemana.getNombre());
 
         l = findViewById(R.id.l);
         l.setOnClickListener(new View.OnClickListener() {
