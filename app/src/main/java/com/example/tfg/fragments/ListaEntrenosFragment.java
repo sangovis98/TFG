@@ -8,38 +8,33 @@ import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tfg.DiasSemanaEntrenosActivity;
 import com.example.tfg.R;
-import com.example.tfg.adapters.AdapterDiaDieta;
 import com.example.tfg.adapters.AdapterEntrenosSemanales;
 import com.example.tfg.interfaces.OnItemListener;
-import com.example.tfg.modelo.DiaDieta;
-import com.example.tfg.modelo.Ejercicio;
 import com.example.tfg.modelo.EntrenoSemana;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
+/**
+ * Clase contenedora del fragment entrenos
+ */
 
 public class ListaEntrenosFragment extends Fragment implements OnItemListener {
 
@@ -50,6 +45,8 @@ public class ListaEntrenosFragment extends Fragment implements OnItemListener {
     private RecyclerView recyclerView;
     private AdapterEntrenosSemanales adapterEntrenosSemanales;
     private String nombreDialog;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -58,25 +55,8 @@ public class ListaEntrenosFragment extends Fragment implements OnItemListener {
         recyclerView = root.findViewById(R.id.listaEntrenosSemanales);
 
         db = FirebaseFirestore.getInstance();
-/*
-        EntrenoSemana es = new EntrenoSemana(1, "Entreno", 999, null);
-        Ejercicio ej = new Ejercicio(1, "Elevaciones laterales", 15, 3, "Hombros", "Lunes");
-
-        db.collection("usuarios")
-                .document("KVNZAq8vBvgCB4pP4iJv")
-                .collection("entrenosSemanales")
-                .document(es.getNombre())
-                .set(es, SetOptions.merge());
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("ejEntrenoSemanal", FieldValue.arrayUnion(ej));
-
-        db.collection("usuarios")
-                .document("KVNZAq8vBvgCB4pP4iJv")
-                .collection("entrenosSemanales")
-                .document(es.getNombre())
-                .set(map, SetOptions.merge());
-*/
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
         llenarEntrenoSemanal();
 
         imgAddEntrenoSemanal = root.findViewById(R.id.imgAddEntrenoSemanal);
@@ -104,7 +84,7 @@ public class ListaEntrenosFragment extends Fragment implements OnItemListener {
                         //Creamos entreno semanal
                         entrenoSemana = new EntrenoSemana(entrenosSemanales.size() + 1, nombreDialog, null);
                         db.collection("usuarios")
-                                .document("KVNZAq8vBvgCB4pP4iJv")
+                                .document(firebaseUser.getUid())
                                 .collection("entrenosSemanales")
                                 .document(nombreDialog)
                                 .set(entrenoSemana, SetOptions.merge());
@@ -125,10 +105,13 @@ public class ListaEntrenosFragment extends Fragment implements OnItemListener {
         return root;
     }
 
+    /**
+     * Hace una consulta a la base de datos y llena la lista de entrenos semanales
+     */
     public void llenarEntrenoSemanal(){
         entrenosSemanales = new ArrayList<>();
         db.collection("usuarios")
-                .document("KVNZAq8vBvgCB4pP4iJv")
+                .document(firebaseUser.getUid())
                 .collection("entrenosSemanales")
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -143,6 +126,9 @@ public class ListaEntrenosFragment extends Fragment implements OnItemListener {
                 });
     }
 
+    /**
+     * Añade todas las dietas al recycler view mediante el adapter
+     */
     public void initRecylerView(){
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         recyclerView.setHasFixedSize(true);
@@ -154,11 +140,15 @@ public class ListaEntrenosFragment extends Fragment implements OnItemListener {
         }
     }
 
+    /**
+     * Nos permite acceder al elemento clicado
+     *
+     * @param position posición del elemento dentro de el adapter
+     */
     @Override
     public void onItemClick(int position) {
         Intent i = new Intent(getContext(), DiasSemanaEntrenosActivity.class);
         i.putExtra("entrenoSemanal", entrenosSemanales.get(position));//Entreno semanal en el cual hago click
-        i.putExtra("ejEntreno", entrenosSemanales.get(position).getEjEntrenoSemanal());//Ejercicios del entreno semanal
         startActivity(i);
     }
 }

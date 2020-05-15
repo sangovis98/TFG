@@ -22,7 +22,11 @@ import com.example.tfg.R;
 import com.example.tfg.adapters.AdapterDiaDieta;
 import com.example.tfg.interfaces.OnItemListener;
 import com.example.tfg.modelo.DiaDieta;
+import com.example.tfg.modelo.Usuario;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -30,8 +34,11 @@ import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
 
-
+/**
+ * Clase contenedora del fragment de dietas de la aplicación
+ */
 public class ListaDietasFragment extends Fragment implements OnItemListener {
+
     private RecyclerView recyclerView;
     private ImageView imageView;
     private ArrayList<DiaDieta> dietasDias;
@@ -39,6 +46,9 @@ public class ListaDietasFragment extends Fragment implements OnItemListener {
     private DiaDieta diaDieta;
     private AdapterDiaDieta adapterDiaDieta;
     private String nombreDialog;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
+    private Usuario u;
 
     LinearLayoutManager linearLayoutManager;
 
@@ -46,9 +56,18 @@ public class ListaDietasFragment extends Fragment implements OnItemListener {
                              final ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_lista_dietas, container, false);
 
+        //Inicializamos variables correspondientes a la base de datos y al recycler view
         db = FirebaseFirestore.getInstance();
-
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
         recyclerView = root.findViewById(R.id.listaEntrenosSemanales);
+
+        db.collection("usuarios").document(firebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                u = documentSnapshot.toObject(Usuario.class);
+            }
+        });
 
         llenarDiaDietas();
 
@@ -79,7 +98,7 @@ public class ListaDietasFragment extends Fragment implements OnItemListener {
                         //Creamos dieta
                         diaDieta = new DiaDieta(dietasDias.size()+1, nombreDialog, 0, 0, 0, 0, null);
                         db.collection("usuarios")
-                                .document("KVNZAq8vBvgCB4pP4iJv")
+                                .document(firebaseUser.getUid())
                                 .collection("diasDietas")
                                 .document(nombreDialog)
                                 .set(diaDieta, SetOptions.merge());
@@ -100,6 +119,9 @@ public class ListaDietasFragment extends Fragment implements OnItemListener {
         return root;
     }
 
+    /**
+     * Añade todas las dietas al recycler view mediante el adapter
+     */
     public void initRecylerView(){
         linearLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -107,7 +129,7 @@ public class ListaDietasFragment extends Fragment implements OnItemListener {
         if (dietasDias == null){
             Toast.makeText(getContext(), "No tienes dietas", Toast.LENGTH_SHORT).show();
         }else {
-            adapterDiaDieta = new AdapterDiaDieta(dietasDias, this);
+            adapterDiaDieta = new AdapterDiaDieta(dietasDias, this, u, getContext());
             recyclerView.setAdapter(adapterDiaDieta);
         }
     }
@@ -118,7 +140,7 @@ public class ListaDietasFragment extends Fragment implements OnItemListener {
     public void llenarDiaDietas(){
         dietasDias = new ArrayList<>();
         db.collection("usuarios")
-                .document("KVNZAq8vBvgCB4pP4iJv")
+                .document(firebaseUser.getUid())
                 .collection("diasDietas")
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -133,6 +155,11 @@ public class ListaDietasFragment extends Fragment implements OnItemListener {
                 });
     }
 
+    /**
+     * Nos permite acceder al elemento clicado
+     *
+     * @param position posición del elemento dentro de el adapter
+     */
     @Override
     public void onItemClick(int position) {
         Intent i = new Intent(getActivity(), DiaDietaActivity.class);

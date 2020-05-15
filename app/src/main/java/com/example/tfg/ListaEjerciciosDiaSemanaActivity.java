@@ -1,10 +1,5 @@
 package com.example.tfg;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,18 +12,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tfg.adapters.AdapterDiaDieta;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.tfg.adapters.AdapterEjercicios;
 import com.example.tfg.interfaces.OnItemListener;
-import com.example.tfg.modelo.DiaDieta;
 import com.example.tfg.modelo.Ejercicio;
 import com.example.tfg.modelo.EntrenoSemana;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
@@ -46,6 +42,8 @@ public class ListaEjerciciosDiaSemanaActivity extends AppCompatActivity implemen
     private ArrayList<Ejercicio> ejercicios;
     private TextView txtNDia;
     private ImageView ivAddEjercicioDia;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +51,11 @@ public class ListaEjerciciosDiaSemanaActivity extends AppCompatActivity implemen
         setContentView(R.layout.activity_lista_ejercicios_dia_semana);
 
         db = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
 
-        obtenerBundle();
+        nDia = getIntent().getStringExtra("nDia");
+        entrenoSemana = getIntent().getParcelableExtra("entrenoSemanal");
 
         ivAddEjercicioDia = findViewById(R.id.ivAddEjercicioDia);
         ivAddEjercicioDia.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +71,11 @@ public class ListaEjerciciosDiaSemanaActivity extends AppCompatActivity implemen
 
         txtNDia = findViewById(R.id.txtNDia);
         txtNDia.setText(nDia);
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
         llenarEjerciciosDia();
     }
 
@@ -93,7 +98,7 @@ public class ListaEjerciciosDiaSemanaActivity extends AppCompatActivity implemen
         ejercicios = new ArrayList<>();
         ejsSegunDia = new ArrayList<>();
         db.collection("usuarios")
-                .document("KVNZAq8vBvgCB4pP4iJv")
+                .document(firebaseUser.getUid())
                 .collection("entrenosSemanales")
                 .document(entrenoSemana.getNombre())
                 .get()
@@ -136,9 +141,9 @@ public class ListaEjerciciosDiaSemanaActivity extends AppCompatActivity implemen
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //Ejercicio seleccionado
-                Ejercicio e = new Ejercicio(ejercicios.get(position).getId(), ejercicios.get(position).getNombre(), ejercicios.get(position).getRepeticiones(), ejercicios.get(position).getSeries(), ejercicios.get(position).getGrupo(), ejercicios.get(position).getnDia());
+                Ejercicio e = new Ejercicio(ejsSegunDia.get(position).getId(), ejsSegunDia.get(position).getNombre(), ejsSegunDia.get(position).getRepeticiones(), ejsSegunDia.get(position).getSeries(), ejsSegunDia.get(position).getGrupo(), ejsSegunDia.get(position).getnDia());
 
-                for (Ejercicio ej : ejercicios){
+                for (Ejercicio ej : ejsSegunDia) {
                     if (ej.getId() == e.getId()){
                         ej.setSeries(Integer.parseInt(series.getText().toString()));
                         ej.setRepeticiones(Integer.parseInt(repeticiones.getText().toString()));
@@ -150,7 +155,7 @@ public class ListaEjerciciosDiaSemanaActivity extends AppCompatActivity implemen
 
                 //Lectura de base de datos
                 db.collection("usuarios")
-                        .document("KVNZAq8vBvgCB4pP4iJv")
+                        .document(firebaseUser.getUid())
                         .collection("entrenosSemanales")
                         .document(entrenoSemana.getNombre())
                         .set(map, SetOptions.merge());
@@ -169,10 +174,5 @@ public class ListaEjerciciosDiaSemanaActivity extends AppCompatActivity implemen
             }
         });
         dialog.show();
-    }
-
-    public void obtenerBundle(){
-        nDia = getIntent().getStringExtra("nDia");
-        entrenoSemana = getIntent().getParcelableExtra("entrenoSemanal");
     }
 }

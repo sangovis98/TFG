@@ -12,16 +12,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DocumentarEjercicioActivity"></activity>
-        <activity android:name=".ListaEjerciciosActivity" />
-        <activity android:name=".ListaEjerciciosDiaSemanaActivity" />
-        <activity android:name=".CrearProducto" />
-        <activity android:name=".ListaProductosActivity" />
-        <activity android:name=".ProductoActivity" />
-        <activity android:name=".DiaDietaActivity" />
-        <activity android:name=".DiasSemanaEntrenosActivity" />
+        <activity android:name=".PrimeraActivity"></activity>
+        <activity android:name=".EditarTablaDeEntreno" />
+        <activity android:name=".EditarDietaActivity" />
+        <activity android:name=".EditarObjetivoActivity" />
+        <activity android:name=".EditarInfoPersonalActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,6 +26,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".RegistroActivity" />
+        <activity android:name=".DocumentarEjercicioActivity" />
+        <activity android:name=".ListaEjerciciosActivity" />
+        <activity android:name=".ListaEjerciciosDiaSemanaActivity" />
+        <activity android:name=".CrearProducto" />
+        <activity android:name=".ListaProductosActivity" />
+        <activity android:name=".ProductoActivity" />
+        <activity android:name=".DiaDietaActivity" />
+        <activity android:name=".DiasSemanaEntrenosActivity" />
+        <activity android:name=".MainActivity" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

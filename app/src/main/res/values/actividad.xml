@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="actividad">
+        <item>Ligera (1-3 día/semana)</item>
+        <item>Moderada (3-5 día/semana)</item>
+        <item>Alta (6-7 día/semana)</item>
+        <item>Intensa (dobles sesiones)</item>
+    </string-array>
+</resources>

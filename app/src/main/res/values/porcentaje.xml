@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="porcentajeBajar">
+        <item>-10% (Bajada lenta asegurando masa muscular)</item>
+        <item>-20% (Bajada media con riesgo mínima de pérdida de masa muscular)</item>
+        <item>-30% (Bajada rápida pero con alto riesgo de pérdida de masa muscular)</item>
+    </string-array>
+    <string-array name="porcentajeSubir">
+        <item>+10% (Subida lenta si tienes tendencia a engordar)</item>
+        <item>+15% (Subida moderada)</item>
+        <item>+20% (Subida rápida si te cuesta coger peso)</item>
+    </string-array>
+    <string-array name="porcentajeVacio">
+        <item>Establezca antes su peso y peso objetivo</item>
+    </string-array>
+</resources>

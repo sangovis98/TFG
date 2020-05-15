@@ -1,21 +1,25 @@
 package com.example.tfg;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.Toast;
-
-import com.example.tfg.adapters.AdapterEjercicios;
+import com.example.tfg.adapters.AdapterEjerciciosNoSeries;
 import com.example.tfg.interfaces.OnItemListener;
 import com.example.tfg.modelo.Ejercicio;
 import com.example.tfg.modelo.EntrenoSemana;
-import com.example.tfg.modelo.Producto;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -33,10 +37,13 @@ public class ListaEjerciciosActivity extends AppCompatActivity implements OnItem
     private EntrenoSemana entrenoSemana;
     private FirebaseFirestore db;
     private RecyclerView recyclerView;
-    private AdapterEjercicios adapterEjercicios;
+    private AdapterEjerciciosNoSeries adapterEjercicios;
     private ArrayList<Ejercicio> ejercicios;
+    private ArrayList<Ejercicio> listaFiltrada;
     private Ejercicio e;
     private ImageView ivAddEG;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +51,11 @@ public class ListaEjerciciosActivity extends AppCompatActivity implements OnItem
         setContentView(R.layout.activity_lista_ejercicios);
 
         db = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
 
-        obtenerBundle();
+        nDia = getIntent().getStringExtra("nDia");
+        entrenoSemana = getIntent().getParcelableExtra("entrenoSemanal");
 
         ivAddEG = findViewById(R.id.ivAddEG);
         ivAddEG.setOnClickListener(new View.OnClickListener() {
@@ -59,16 +69,32 @@ public class ListaEjerciciosActivity extends AppCompatActivity implements OnItem
         });
 
         llenarEjerciciosDia();
+
+        EditText editText = findViewById(R.id.etBusquedaEjercicios);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filter(s.toString());
+            }
+        });
     }
 
     public void initRecylerView(){
         recyclerView = findViewById(R.id.listaGeneralEjercicios);
-        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
+        recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 3));
         recyclerView.setHasFixedSize(true);
         if (ejercicios == null){
             Toast.makeText(getApplicationContext(), "No tienes ejercicios en este día", Toast.LENGTH_SHORT).show();
         }else {
-            adapterEjercicios = new AdapterEjercicios(ejercicios, this);
+            adapterEjercicios = new AdapterEjerciciosNoSeries(ejercicios, this);
             recyclerView.setAdapter(adapterEjercicios);
         }
     }
@@ -86,6 +112,7 @@ public class ListaEjerciciosActivity extends AppCompatActivity implements OnItem
                             ejercicios.add(e);
                         }
                         initRecylerView();
+                        listaFiltrada = new ArrayList<>(ejercicios);
                     }
                 });
     }
@@ -105,7 +132,7 @@ public class ListaEjerciciosActivity extends AppCompatActivity implements OnItem
         map.put("ejEntrenoSemanal", FieldValue.arrayUnion(e));
 
         db.collection("usuarios")
-                .document("KVNZAq8vBvgCB4pP4iJv")
+                .document(firebaseAuth.getUid())
                 .collection("entrenosSemanales")
                 .document(entrenoSemana.getNombre())
                 .set(map , SetOptions.merge());
@@ -117,16 +144,11 @@ public class ListaEjerciciosActivity extends AppCompatActivity implements OnItem
         finish();
     }
 
-    public void obtenerBundle(){
-        nDia = getIntent().getStringExtra("nDia");
-        entrenoSemana = getIntent().getParcelableExtra("entrenoSemanal");
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
         db.collection("usuarios")
-                .document("KVNZAq8vBvgCB4pP4iJv")
+                .document(firebaseAuth.getUid())
                 .collection("entrenosSemanales")
                 .document(entrenoSemana.getNombre())
                 .get()
@@ -136,6 +158,17 @@ public class ListaEjerciciosActivity extends AppCompatActivity implements OnItem
                         entrenoSemana.setEjEntrenoSemanal(documentSnapshot.toObject(EntrenoSemana.class).getEjEntrenoSemanal());
                     }
                 });
+    }
+
+    public void filter(String txt) {
+        listaFiltrada = new ArrayList<>();
+
+        for (Ejercicio item : ejercicios) {
+            if (item.getNombre().toLowerCase().contains(txt.toLowerCase())) {
+                listaFiltrada.add(item);
+            }
+        }
+        adapterEjercicios.filtraLista(listaFiltrada);
     }
 }
 

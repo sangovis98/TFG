@@ -1,26 +1,25 @@
 package com.example.tfg;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tfg.adapters.AdapterProductos;
 import com.example.tfg.interfaces.OnItemListener;
 import com.example.tfg.modelo.DiaDieta;
 import com.example.tfg.modelo.Producto;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -45,6 +44,8 @@ public class ListaProductosActivity extends AppCompatActivity implements OnItemL
     private ArrayList<Producto> listaFiltrada;
     private int n;
     private ImageView btnCrearProducto;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,8 @@ public class ListaProductosActivity extends AppCompatActivity implements OnItemL
         setContentView(R.layout.activity_lista_productos);
 
         db = FirebaseFirestore.getInstance();
-
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
         productos = new ArrayList<>();
         db.collection("productos")
                 .orderBy("nombre")
@@ -110,7 +112,7 @@ public class ListaProductosActivity extends AppCompatActivity implements OnItemL
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
-        adapterProductos = new AdapterProductos(productos, this);
+        adapterProductos = new AdapterProductos(productos, this, ListaProductosActivity.this, diaDieta);
         recyclerView.setAdapter(adapterProductos);
     }
 
@@ -151,13 +153,13 @@ public class ListaProductosActivity extends AppCompatActivity implements OnItemL
         map.put("productos", FieldValue.arrayUnion(p));
 
         db.collection("usuarios")
-                .document("KVNZAq8vBvgCB4pP4iJv")
+                .document(firebaseUser.getUid())
                 .collection("diasDietas")
                 .document(diaDieta.getnDia())
                 .set(map, SetOptions.merge());
 
         db.collection("usuarios")
-                .document("KVNZAq8vBvgCB4pP4iJv")
+                .document(firebaseUser.getUid())
                 .collection("diasDietas")
                 .document(diaDieta.getnDia())
                 .get()

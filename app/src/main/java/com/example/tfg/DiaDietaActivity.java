@@ -1,30 +1,26 @@
 package com.example.tfg;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.tfg.adapters.AdapterProductos;
-import com.example.tfg.fragments.ListaDietasFragment;
 import com.example.tfg.interfaces.OnItemListener;
 import com.example.tfg.modelo.DiaDieta;
 import com.example.tfg.modelo.Producto;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -39,8 +35,10 @@ public class DiaDietaActivity extends AppCompatActivity implements OnItemListene
     private String momentoDia;
     private DiaDieta diaDieta;
     private ArrayList<DiaDieta> dietasDias;
-    private ImageView imageView;
+    private ImageView imageView, ivDelDieta;
     private TextView txtNombreDiaDieta;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser firebaseUser;
 
     LinearLayoutManager linearLayoutManager;
 
@@ -50,7 +48,8 @@ public class DiaDietaActivity extends AppCompatActivity implements OnItemListene
         setContentView(R.layout.activity_dia_dieta);
 
         db = FirebaseFirestore.getInstance();
-
+        firebaseAuth = FirebaseAuth.getInstance();
+        firebaseUser = firebaseAuth.getCurrentUser();
         txtNombreDiaDieta = findViewById(R.id.txtNombreDiaDieta);
 
         imageView = findViewById(R.id.ivAddProductoDieta);
@@ -63,6 +62,8 @@ public class DiaDietaActivity extends AppCompatActivity implements OnItemListene
                 startActivity(i);
             }
         });
+        ivDelDieta = findViewById(R.id.ivDelDieta);
+
     }
 
     @Override
@@ -71,6 +72,29 @@ public class DiaDietaActivity extends AppCompatActivity implements OnItemListene
         obtenerDiaDieta();
         initRecylerView();
         txtNombreDiaDieta.setText(diaDieta.getnDia());
+
+        ivDelDieta.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                android.app.AlertDialog.Builder dialog = new AlertDialog.Builder(DiaDietaActivity.this);
+                dialog.setTitle("¿Eliminar permanentemente este día?");
+                dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        db.collection("usuarios").document(firebaseUser.getUid()).collection("diasDietas").document(diaDieta.getnDia()).delete();
+                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                dialog.show();
+            }
+        });
     }
 
     public void initRecylerView(){
@@ -81,7 +105,7 @@ public class DiaDietaActivity extends AppCompatActivity implements OnItemListene
         if (productosDiaDieta == null){
             Toast.makeText(getApplicationContext(), "Su dieta no tiene productos", Toast.LENGTH_SHORT).show();
         }else {
-            adapterProductos = new AdapterProductos(productosDiaDieta, this);
+            adapterProductos = new AdapterProductos(productosDiaDieta, this, DiaDietaActivity.this, diaDieta);
             recyclerView.setAdapter(adapterProductos);
         }
     }

@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.tfg.R;
 import com.example.tfg.interfaces.OnItemListener;
-import com.example.tfg.modelo.DiaDieta;
 import com.example.tfg.modelo.Ejercicio;
 
 import java.util.ArrayList;
@@ -36,8 +35,8 @@ public class AdapterEjercicios extends RecyclerView.Adapter<AdapterEjercicios.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolderEjercicios holder, int position) {
         holder.txtItemEjercicio.setText(listItems.get(position).getNombre());
-        holder.txtItemRepeticiones.setText(String.valueOf(listItems.get(position).getRepeticiones()));
-        holder.txtItemSeries.setText(String.valueOf(listItems.get(position).getSeries()));
+        holder.txtItemRepeticiones.setText(listItems.get(position).getRepeticiones() + " Reps");
+        holder.txtItemSeries.setText(listItems.get(position).getSeries() + " Series");
         holder.txtItemGrupo.setText(listItems.get(position).getGrupo());
     }
 

@@ -1,28 +1,52 @@
 package com.example.tfg.adapters;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.tfg.MainActivity;
 import com.example.tfg.R;
 import com.example.tfg.interfaces.OnItemListener;
 import com.example.tfg.modelo.DiaDieta;
 import com.example.tfg.modelo.Producto;
-import com.squareup.picasso.Picasso;
+import com.example.tfg.modelo.Usuario;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
 import java.util.ArrayList;
 
-public class AdapterDiaDieta extends RecyclerView.Adapter<AdapterDiaDieta.ViewHolderDiaDieta>{
+/**
+ * Esta clase adapter permite llenar el recyler view correspondiente  a las listas de dietas diarias
+ */
+public class AdapterDiaDieta extends RecyclerView.Adapter<AdapterDiaDieta.ViewHolderDiaDieta> {
 
     private ArrayList<DiaDieta> listItems;
     private OnItemListener onDiaDietaListener;
-    private double total;
+    private Usuario u;
+    private Context context;
+    private String nombre;
 
-    public AdapterDiaDieta(ArrayList<DiaDieta> listItems, OnItemListener onDiaDietaListener) {
+    public AdapterDiaDieta(ArrayList<DiaDieta> listItems, OnItemListener onDiaDietaListener, Usuario u, Context context) {
         this.listItems = listItems;
         this.onDiaDietaListener = onDiaDietaListener;
+        this.u = u;
+        this.context = context;
     }
 
     @NonNull
@@ -34,26 +58,90 @@ public class AdapterDiaDieta extends RecyclerView.Adapter<AdapterDiaDieta.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AdapterDiaDieta.ViewHolderDiaDieta holder, int position) {
+    public void onBindViewHolder(@NonNull final AdapterDiaDieta.ViewHolderDiaDieta holder, final int position) {
+
+        final FirebaseFirestore db = FirebaseFirestore.getInstance();
+        final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
         double proteinas = 0, hidratos = 0, grasas = 0;
 
-        if (listItems.get(position).getProductos() != null){
-            for (Producto p : listItems.get(position).getProductos()){
+        if (listItems.get(position).getProductos() != null) {
+            for (Producto p : listItems.get(position).getProductos()) {
                 proteinas += p.getProteinas();
                 hidratos += p.getHidratos();
                 grasas += p.getGrasas();
             }
         }
 
+        final double finalProteinas = proteinas;
+        final double finalHidratos = hidratos;
+        final double finalGrasas = grasas;
+        db.collection("usuarios").document(firebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                u = documentSnapshot.toObject(Usuario.class);
+
+                holder.pbProteinas.setMax((int) u.getTotalProteinas());
+                holder.pbProteinas.setProgress((int) ((finalProteinas * 100) / u.getTotalProteinas()));
+                holder.pbHidratos.setMax((int) u.getConsumoHidratos());
+                holder.pbHidratos.setProgress((int) ((finalHidratos * 100) / u.getTotalHidratos()));
+                holder.pbGrasas.setMax((int) u.getTotalGrasas());
+                holder.pbGrasas.setProgress((int) ((finalGrasas * 100) / u.getTotalGrasas()));
+            }
+        });
+
         holder.txtNombreDiaDieta.setText(listItems.get(position).getnDia());
         holder.txtProteinasDiaDieta.setText(String.format("%.2f", proteinas));
         holder.txtHidratosDiaDieta.setText(String.format("%.2f", hidratos));
         holder.txtGrasasDiaDieta.setText(String.format("%.2f", grasas));
-        holder.pbProteinas.setProgress((int) proteinas);
-        holder.pbHidratos.setProgress((int) hidratos);
-        holder.pbGrasas.setProgress((int) grasas);
-        holder.txtItemDiaDietaCalorias.setText(String.valueOf((int) (proteinas + hidratos + grasas)));
+        holder.txtItemDiaDietaCalorias.setText((int) (proteinas + hidratos + grasas) + " Kcal");
+
+        //Editar Dieta
+        holder.ivItemDiaDietaEditar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                dialog.setTitle("Editar el nombre");
+
+                final EditText editText = new EditText(context);
+                editText.setInputType(InputType.TYPE_CLASS_TEXT);
+                dialog.setView(editText);
+
+                dialog.setPositiveButton("EDITAR", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        nombre = editText.getText().toString();
+
+                        db.collection("usuarios").document(firebaseUser.getUid()).collection("diasDietas").document(listItems.get(position).getnDia()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                DiaDieta diaDieta = documentSnapshot.toObject(DiaDieta.class);
+
+                                //Editar, es necesario eliminar y volver a crear el dia dieta pues no se puede cambiar el nombre del id del documento (permanece con el id de su creacón)
+                                diaDieta.setnDia(nombre);
+                                db.collection("usuarios").document(firebaseUser.getUid()).collection("diasDietas").document(listItems.get(position).getnDia()).delete();
+                                db.collection("usuarios").document(firebaseUser.getUid()).collection("diasDietas").document(nombre).set(diaDieta, SetOptions.merge());
+                                ((MainActivity) context).finish();
+                                ((MainActivity) context).overridePendingTransition(0, 0);
+                                context.startActivity(new Intent(context, MainActivity.class));
+                            }
+                        });
+                        dialog.dismiss();
+
+                    }
+                });
+
+                dialog.setNegativeButton("CANCELAR", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                dialog.show();
+            }
+        });
+
     }
 
     @Override
@@ -61,7 +149,7 @@ public class AdapterDiaDieta extends RecyclerView.Adapter<AdapterDiaDieta.ViewHo
         return listItems.size();
     }
 
-    public class ViewHolderDiaDieta extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class ViewHolderDiaDieta extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView txtNombreDiaDieta;
         TextView txtProteinasDiaDieta;
@@ -71,10 +159,11 @@ public class AdapterDiaDieta extends RecyclerView.Adapter<AdapterDiaDieta.ViewHo
         ProgressBar pbProteinas;
         ProgressBar pbHidratos;
         ProgressBar pbGrasas;
+        ImageView ivItemDiaDietaEditar;
 
         public ViewHolderDiaDieta(@NonNull View itemView, OnItemListener onDiaDietaListener) {
             super(itemView);
-            txtNombreDiaDieta = itemView.findViewById(R.id.txtItemDiaDieta);
+            txtNombreDiaDieta = itemView.findViewById(R.id.txtItemNombreEntrenoS);
             txtProteinasDiaDieta = itemView.findViewById(R.id.txtItemDiaDietaProteinas);
             txtHidratosDiaDieta = itemView.findViewById(R.id.txtItemDiaDietaHidratos);
             txtGrasasDiaDieta = itemView.findViewById(R.id.txtItemDiaDietaGrasas);
@@ -82,6 +171,7 @@ public class AdapterDiaDieta extends RecyclerView.Adapter<AdapterDiaDieta.ViewHo
             pbProteinas = itemView.findViewById(R.id.pbProteinas);
             pbHidratos = itemView.findViewById(R.id.pbHidratos);
             pbGrasas = itemView.findViewById(R.id.pbGrasas);
+            ivItemDiaDietaEditar = itemView.findViewById(R.id.sItemDiaDietaEditar);
             itemView.setOnClickListener(this);
         }
 
