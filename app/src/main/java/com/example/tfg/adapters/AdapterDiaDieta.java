@@ -68,9 +68,10 @@ public class AdapterDiaDieta extends RecyclerView.Adapter<AdapterDiaDieta.ViewHo
 
         if (listItems.get(position).getProductos() != null) {
             for (Producto p : listItems.get(position).getProductos()) {
-                proteinas += p.getProteinas();
-                hidratos += p.getHidratos();
-                grasas += p.getGrasas();
+                //Cambio el valor nutricional por cada 100 gramos a el total de cada macro por el peso total del alimento
+                proteinas += p.getProteinas100() / 100 * p.getGramos(); //Total deproteínas
+                hidratos += p.getHidratos100() / 100 * p.getGramos(); //Total de hidratos
+                grasas += p.getGrasas100() / 100 * p.getGramos(); //Total de grasas
             }
         }
 

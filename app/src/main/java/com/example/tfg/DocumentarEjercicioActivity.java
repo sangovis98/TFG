@@ -40,6 +40,7 @@ public class DocumentarEjercicioActivity extends AppCompatActivity {
     private ArrayList<Ejercicio> ejsDieta;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    private int de = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,9 @@ public class DocumentarEjercicioActivity extends AppCompatActivity {
         btnDocumentarEjercicio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (ejercicios != null) {
+                    de = ejercicios.size();
+                }
                 //Contabiliza número de ejercicios
                 db.collection("ejercicios")
                         .get()
@@ -74,7 +78,7 @@ public class DocumentarEjercicioActivity extends AppCompatActivity {
                                     e = qds.toObject(Ejercicio.class);
                                     ejercicios.add(e);
                                 }
-                                e = new Ejercicio(ejercicios.size() + 1, etNombreEjercicio.getText().toString(), 0, 0, sGrupoMuscular.getSelectedItem().toString(), "");
+                                e = new Ejercicio(de + 1, etNombreEjercicio.getText().toString(), 0, 0, sGrupoMuscular.getSelectedItem().toString(), "");
 
                                 //Añade a la collección general de ejercicios
                                 db.collection("ejercicios").add(e);

@@ -107,34 +107,39 @@ public class PerfilFragment extends Fragment {
                 dietaCalorias.setText(Math.round(usuario.getTotalKcal() * 100) / 100.f + " Kcal");
 
 
-                db.collection("usuarios").document(firebaseUser.getUid()).collection("entrenosSemanales").document(usuario.getEntrenoSemanaEnUso()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        EntrenoSemana es = documentSnapshot.toObject(EntrenoSemana.class);
+                if (!usuario.getEntrenoSemanaEnUso().equals("")) {
+                    db.collection("usuarios").document(firebaseUser.getUid()).collection("entrenosSemanales").document(usuario.getEntrenoSemanaEnUso()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            EntrenoSemana es = documentSnapshot.toObject(EntrenoSemana.class);
 
-                        boolean l = false, m = false, x = false, j = false, v = false, s = false, d = false;
-                        for (Ejercicio e : es.getEjEntrenoSemanal()) {
-                            if (e.getnDia().equals("Lunes")) {
-                                l = true;
-                            } else if (e.getnDia().equals("Martes")) {
-                                m = true;
-                            } else if (e.getnDia().equals("Miercoles")) {
-                                x = true;
-                            } else if (e.getnDia().equals("Jueves")) {
-                                j = true;
-                            } else if (e.getnDia().equals("Viernes")) {
-                                v = true;
-                            } else if (e.getnDia().equals("Sabado")) {
-                                s = true;
-                            } else if (e.getnDia().equals("Domingo")) {
-                                d = true;
+                            boolean l = false, m = false, x = false, j = false, v = false, s = false, d = false;
+                            for (Ejercicio e : es.getEjEntrenoSemanal()) {
+                                if (e.getnDia().equals("Lunes")) {
+                                    l = true;
+                                } else if (e.getnDia().equals("Martes")) {
+                                    m = true;
+                                } else if (e.getnDia().equals("Miercoles")) {
+                                    x = true;
+                                } else if (e.getnDia().equals("Jueves")) {
+                                    j = true;
+                                } else if (e.getnDia().equals("Viernes")) {
+                                    v = true;
+                                } else if (e.getnDia().equals("Sabado")) {
+                                    s = true;
+                                } else if (e.getnDia().equals("Domingo")) {
+                                    d = true;
+                                }
+
+                                entrenoPerfilDias.setText("Entreno " + compruebaDias(l, m, x, j, v, s, d) + " días/semana");
                             }
 
-                            entrenoPerfilDias.setText("Entreno " + compruebaDias(l, m, x, j, v, s, d) + " días/semana");
                         }
-
-                    }
-                });
+                    });
+                } else {
+                    entrenoPerfilTE.setText("Elige un entreno");
+                    entrenoPerfilDias.setText("Días del entreno");
+                }
             }
         });
 

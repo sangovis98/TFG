@@ -4,9 +4,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,11 +20,16 @@ import com.example.tfg.adapters.AdapterProductos;
 import com.example.tfg.interfaces.OnItemListener;
 import com.example.tfg.modelo.DiaDieta;
 import com.example.tfg.modelo.Producto;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DiaDietaActivity extends AppCompatActivity implements OnItemListener {
 
@@ -111,8 +118,58 @@ public class DiaDietaActivity extends AppCompatActivity implements OnItemListene
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(final int position) {
 
+        final EditText et = new EditText(getApplicationContext());
+        LinearLayout linearLayout = new LinearLayout(getApplicationContext());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        et.setInputType(InputType.TYPE_CLASS_NUMBER);
+        linearLayout.addView(et);
+
+        AlertDialog.Builder dialog = new AlertDialog.Builder(DiaDietaActivity.this);
+        dialog.setView(linearLayout);
+        dialog.setTitle("Editar peso del alimento");
+        dialog.setPositiveButton("EDITAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (et.getText().toString().equals("") || Integer.parseInt(et.getText().toString()) == 0) {
+                    Toast.makeText(getApplicationContext(), "Introduzca un valor válido", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                } else {
+                    db.collection("usuarios").document(firebaseUser.getUid()).collection("diasDietas").document(diaDieta.getnDia()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            ArrayList<Producto> dd = documentSnapshot.toObject(DiaDieta.class).getProductos();
+
+                            for (Producto p : dd) {
+                                if (p.getNombre().equals(productosDiaDieta.get(position).getNombre())) {
+                                    p.setGramos(Integer.parseInt(et.getText().toString()));
+                                }
+                            }
+
+                            Map<String, Object> upd = new HashMap<>();
+                            upd.put("productos", dd);
+                            db.collection("usuarios").document(firebaseUser.getUid()).collection("diasDietas").document(diaDieta.getnDia()).set(upd, SetOptions.merge());
+                            //Recargo la activity
+                            Intent i = new Intent(getApplicationContext(), DiaDietaActivity.class);
+                            productosDiaDieta.get(position).setGramos(Integer.parseInt(et.getText().toString()));
+                            i.putExtra("dieta", diaDieta);
+                            i.putExtra("dietas", productosDiaDieta);
+                            startActivity(i);
+                            overridePendingTransition(0, 0);
+                        }
+                    });
+                }
+                dialog.dismiss();
+            }
+        });
+        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        dialog.show();
     }
 
     /**

@@ -88,22 +88,26 @@ public class ListaDietasFragment extends Fragment implements OnItemListener {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         nombreDialog = editText.getText().toString();
-                        //Comprobueba que no hay una dieta con el mismo nombre
-                        for (DiaDieta diaDieta : dietasDias){
-                            if (nombreDialog.equals(diaDieta.getnDia())){
-                                Toast.makeText(getContext(), "Ya existe una dieta con ese nombre", Toast.LENGTH_SHORT).show();
-                                dialog.dismiss();
+                        if (nombreDialog.equals("")) {
+                            dialog.dismiss();
+                        } else {
+                            //Comprobueba que no hay una dieta con el mismo nombre
+                            for (DiaDieta diaDieta : dietasDias) {
+                                if (nombreDialog.equals(diaDieta.getnDia())) {
+                                    Toast.makeText(getContext(), "Ya existe una dieta con ese nombre", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                }
                             }
-                        }
-                        //Creamos dieta
-                        diaDieta = new DiaDieta(dietasDias.size()+1, nombreDialog, 0, 0, 0, 0, null);
-                        db.collection("usuarios")
-                                .document(firebaseUser.getUid())
-                                .collection("diasDietas")
-                                .document(nombreDialog)
-                                .set(diaDieta, SetOptions.merge());
+                            //Creamos dieta
+                            diaDieta = new DiaDieta(dietasDias.size() + 1, nombreDialog, 0, 0, 0, 0, null);
+                            db.collection("usuarios")
+                                    .document(firebaseUser.getUid())
+                                    .collection("diasDietas")
+                                    .document(nombreDialog)
+                                    .set(diaDieta, SetOptions.merge());
 
-                        llenarDiaDietas();
+                            llenarDiaDietas();
+                        }
                     }
                 });
                 dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {

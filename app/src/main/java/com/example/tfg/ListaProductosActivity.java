@@ -1,13 +1,18 @@
 package com.example.tfg;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -139,7 +144,7 @@ public class ListaProductosActivity extends AppCompatActivity implements OnItemL
     }
 
     @Override
-    public void onItemClick(int position) {
+    public void onItemClick(final int position) {
 
         if (productosDiaDieta == null){
             n = 0;
@@ -147,36 +152,58 @@ public class ListaProductosActivity extends AppCompatActivity implements OnItemL
             n = productosDiaDieta.size();
         }
 
-        p = new Producto(n+1, listaFiltrada.get(position).getNombre(), listaFiltrada.get(position).getProteinas(), listaFiltrada.get(position).getHidratos(), listaFiltrada.get(position).getGrasas(), listaFiltrada.get(position).getImg());
-        //Añade este producto dentro del arraylist productos en la base de datos
-        Map<String, Object> map = new HashMap<>();
-        map.put("productos", FieldValue.arrayUnion(p));
+        final EditText editText = new EditText(getApplicationContext());
+        LinearLayout layout = new LinearLayout(getApplicationContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        layout.addView(editText);
 
-        db.collection("usuarios")
-                .document(firebaseUser.getUid())
-                .collection("diasDietas")
-                .document(diaDieta.getnDia())
-                .set(map, SetOptions.merge());
+        AlertDialog.Builder dialog = new AlertDialog.Builder(ListaProductosActivity.this);
+        dialog.setView(layout);
+        dialog.setTitle("Gramos del alimento");
+        dialog.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (editText.getText().toString().equals("") || Integer.parseInt(editText.getText().toString()) == 0) {
+                    Toast.makeText(getApplicationContext(), "Introduzca un valor válido", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                } else {
+                    p = new Producto(n + 1, listaFiltrada.get(position).getNombre(), listaFiltrada.get(position).getProteinas100(), listaFiltrada.get(position).getHidratos100(), listaFiltrada.get(position).getGrasas100(), listaFiltrada.get(position).getImg(), Double.parseDouble(editText.getText().toString()));
+                    //Añade este producto dentro del arraylist productos en la base de datos
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("productos", FieldValue.arrayUnion(p));
 
-        db.collection("usuarios")
-                .document(firebaseUser.getUid())
-                .collection("diasDietas")
-                .document(diaDieta.getnDia())
-                .get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        Intent i = new Intent(getApplicationContext(), DiaDietaActivity.class);
-                        productosDiaDieta = documentSnapshot.toObject(DiaDieta.class).getProductos();
-                        i.putExtra("dieta", diaDieta);
-                        i.putExtra("dietas", productosDiaDieta);
-                        startActivity(i);
-                    }
-                });
+                    db.collection("usuarios")
+                            .document(firebaseUser.getUid())
+                            .collection("diasDietas")
+                            .document(diaDieta.getnDia())
+                            .set(map, SetOptions.merge());
 
-
-
-
+                    db.collection("usuarios")
+                            .document(firebaseUser.getUid())
+                            .collection("diasDietas")
+                            .document(diaDieta.getnDia())
+                            .get()
+                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    Intent i = new Intent(getApplicationContext(), DiaDietaActivity.class);
+                                    productosDiaDieta = documentSnapshot.toObject(DiaDieta.class).getProductos();
+                                    i.putExtra("dieta", diaDieta);
+                                    i.putExtra("dietas", productosDiaDieta);
+                                    startActivity(i);
+                                }
+                            });
+                    dialog.dismiss();
+                }
+            }
+        });
+        dialog.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        dialog.show();
     }
-
 }

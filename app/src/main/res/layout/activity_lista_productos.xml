@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FF9800"
     tools:context=".ListaProductosActivity">
 
     <EditText
@@ -16,7 +15,7 @@
         android:ems="10"
         android:hint="Nombre de producto"
         android:inputType="textPersonName"
-        android:textColorHint="#FFFFFF"
+        android:textColorHint="@android:color/holo_orange_light"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

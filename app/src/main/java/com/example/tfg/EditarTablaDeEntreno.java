@@ -78,6 +78,7 @@ public class EditarTablaDeEntreno extends AppCompatActivity implements OnItemLis
         txtDomingoET = findViewById(R.id.txtDomingoET);
         txtDomingoET.setVisibility(View.GONE);
 
+
         db.collection("usuarios").document(firebaseUser.getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {

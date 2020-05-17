@@ -7,29 +7,32 @@ public class Producto implements Parcelable{
 
     private int id;
     private String nombre;
-    private double proteinas;
-    private double hidratos;
-    private double grasas;
+    private double proteinas100;
+    private double hidratos100;
+    private double grasas100;
     private String img;
+    private double gramos;
 
     public Producto() {}
 
-    public Producto(int id, String nombre, double proteinas, double hidratos, double grasas, String img) {
+    public Producto(int id, String nombre, double proteinas100, double hidratos100, double grasas100, String img, double gramos) {
         this.id = id;
         this.nombre = nombre;
-        this.proteinas = proteinas;
-        this.hidratos = hidratos;
-        this.grasas = grasas;
+        this.proteinas100 = proteinas100;
+        this.hidratos100 = hidratos100;
+        this.grasas100 = grasas100;
         this.img = img;
+        this.gramos = gramos;
     }
 
     protected Producto(Parcel in) {
         id = in.readInt();
         nombre = in.readString();
-        proteinas = in.readDouble();
-        hidratos = in.readDouble();
-        grasas = in.readDouble();
+        proteinas100 = in.readDouble();
+        hidratos100 = in.readDouble();
+        grasas100 = in.readDouble();
         img = in.readString();
+        gramos = in.readDouble();
     }
 
     public static final Creator<Producto> CREATOR = new Creator<Producto>() {
@@ -60,28 +63,28 @@ public class Producto implements Parcelable{
         this.nombre = nombre;
     }
 
-    public double getProteinas() {
-        return proteinas;
+    public double getProteinas100() {
+        return proteinas100;
     }
 
-    public void setProteinas(double proteinas) {
-        this.proteinas = proteinas;
+    public void setProteinas100(double proteinas100) {
+        this.proteinas100 = proteinas100;
     }
 
-    public double getHidratos() {
-        return hidratos;
+    public double getHidratos100() {
+        return hidratos100;
     }
 
-    public void setHidratos(double hidratos) {
-        this.hidratos = hidratos;
+    public void setHidratos100(double hidratos100) {
+        this.hidratos100 = hidratos100;
     }
 
-    public double getGrasas() {
-        return grasas;
+    public double getGrasas100() {
+        return grasas100;
     }
 
-    public void setGrasas(double grasas) {
-        this.grasas = grasas;
+    public void setGrasas100(double grasas100) {
+        this.grasas100 = grasas100;
     }
 
     public String getImg() {
@@ -90,6 +93,14 @@ public class Producto implements Parcelable{
 
     public void setImg(String img) {
         this.img = img;
+    }
+
+    public double getGramos() {
+        return gramos;
+    }
+
+    public void setGramos(double gramos) {
+        this.gramos = gramos;
     }
 
     @Override
@@ -101,9 +112,10 @@ public class Producto implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeString(nombre);
-        dest.writeDouble(proteinas);
-        dest.writeDouble(hidratos);
-        dest.writeDouble(grasas);
+        dest.writeDouble(proteinas100);
+        dest.writeDouble(hidratos100);
+        dest.writeDouble(grasas100);
         dest.writeString(img);
+        dest.writeDouble(gramos);
     }
 }

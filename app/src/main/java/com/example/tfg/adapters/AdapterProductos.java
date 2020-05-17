@@ -61,10 +61,14 @@ public class AdapterProductos extends RecyclerView.Adapter<AdapterProductos.View
         final FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
         holder.tvNombre.setText(listItems.get(position).getNombre());
-
-        holder.txtItemPProteinas.setText(String.valueOf(listItems.get(position).getProteinas()));
-        holder.txtItemPHidratos.setText(String.valueOf(listItems.get(position).getHidratos()));
-        holder.txtItemPGrasas.setText(String.valueOf(listItems.get(position).getGrasas()));
+        if (listItems.get(position).getGramos() == 0) {
+            holder.txtItemGramos.setVisibility(View.GONE);
+            holder.ivItemDelProducto.setVisibility(View.GONE);
+        }
+        holder.txtItemGramos.setText(listItems.get(position).getGramos() + " gr");
+        holder.txtItemPProteinas.setText(String.valueOf(listItems.get(position).getProteinas100()));
+        holder.txtItemPHidratos.setText(String.valueOf(listItems.get(position).getHidratos100()));
+        holder.txtItemPGrasas.setText(String.valueOf(listItems.get(position).getGrasas100()));
         if (listItems.get(position).getImg().equals("")){
             Picasso.get().load(R.drawable.descarga).into(holder.ivProducto);
         }else {
@@ -121,7 +125,7 @@ public class AdapterProductos extends RecyclerView.Adapter<AdapterProductos.View
     public class ViewHolderProductos extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         ListaProductosActivity listaProductosActivity;
-        TextView tvNombre, txtItemPProteinas, txtItemPHidratos, txtItemPGrasas;
+        TextView tvNombre, txtItemPProteinas, txtItemPHidratos, txtItemPGrasas, txtItemGramos;
         ImageView ivProducto, ivItemDelProducto;
         ProgressBar pbProteinas;
         ProgressBar pbHidratos;
@@ -132,6 +136,7 @@ public class AdapterProductos extends RecyclerView.Adapter<AdapterProductos.View
             tvNombre = itemView.findViewById(R.id.txtItemNombreEntrenoS);
             ivProducto = itemView.findViewById(R.id.ivItemProducto);
 
+            txtItemGramos = itemView.findViewById(R.id.txtItemGramos);
             txtItemPProteinas = itemView.findViewById(R.id.txtItemPProteinas);
             txtItemPHidratos = itemView.findViewById(R.id.txtItemPHidratos);
             txtItemPGrasas = itemView.findViewById(R.id.txtItemPGrasas);

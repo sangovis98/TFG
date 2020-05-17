@@ -12,11 +12,9 @@ import com.example.tfg.R;
 import com.example.tfg.interfaces.OnItemListener;
 import com.example.tfg.modelo.Ejercicio;
 import com.example.tfg.modelo.EntrenoSemana;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
@@ -24,6 +22,9 @@ public class AdapterEntrenosSemanales extends RecyclerView.Adapter<AdapterEntren
 
     private ArrayList<EntrenoSemana> listItems;
     private OnItemListener onEntrenoSemanalListener;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
     public AdapterEntrenosSemanales(ArrayList<EntrenoSemana> listItems, OnItemListener onEntrenoSemanalListener) {
         this.listItems = listItems;
@@ -42,36 +43,23 @@ public class AdapterEntrenosSemanales extends RecyclerView.Adapter<AdapterEntren
     public void onBindViewHolder(@NonNull final ViewHolderEntrenoDieta holder, final int position) {
         holder.nEntreno.setText(listItems.get(position).getNombre());
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-
-        db.collection("usuarios").document(firebaseUser.getUid()).collection("entrenosSemanales").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                ArrayList<EntrenoSemana> es = (ArrayList<EntrenoSemana>) queryDocumentSnapshots.toObjects(EntrenoSemana.class);
-                int pierna = 0, pecho = 0, espalda = 0;
-                for (EntrenoSemana entrenoSemana : es) {
-                    if (entrenoSemana.getNombre().equals(listItems.get(position).getNombre())) {
-                        //Obtengo los grupos musculares de cada ejercicio
-                        for (Ejercicio e : entrenoSemana.getEjEntrenoSemanal()) {
-                            if (e.getGrupo().equals("Piernas")) {
-                                pierna++;
-                            } else if (e.getGrupo().equals("Espalda")) {
-                                espalda++;
-                            } else {
-                                pecho++;
-                            }
-                        }
-                    }
+        int pierna = 0, pecho = 0, espalda = 0;
+        //Obtengo los grupos musculares de cada ejercicio
+        if (listItems.get(position).getEjEntrenoSemanal() != null) {
+            for (Ejercicio e : listItems.get(position).getEjEntrenoSemanal()) {
+                if (e.getGrupo().equals("Piernas")) {
+                    pierna++;
+                } else if (e.getGrupo().equals("Espalda")) {
+                    espalda++;
+                } else {
+                    pecho++;
                 }
-
-                holder.txtItemEntrenoGrupoPecho.setText("Pecho " + pecho);
-                holder.txtItemEntrenoGrupoPiernas.setText("Espalda " + espalda);
-                holder.txtItemEntrenoGrupoEspalda.setText("Piernas " + pierna);
-                notifyDataSetChanged();
             }
-        });
+        }
+
+        holder.txtItemEntrenoGrupoPecho.setText("Pecho " + pecho);
+        holder.txtItemEntrenoGrupoPiernas.setText("Espalda " + espalda);
+        holder.txtItemEntrenoGrupoEspalda.setText("Piernas " + pierna);
     }
 
     @Override
