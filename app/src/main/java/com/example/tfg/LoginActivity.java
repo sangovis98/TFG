@@ -80,7 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                                                 u = documentSnapshot.toObject(Usuario.class);
 
                                                 if (u.isPrimeraVez()) {
-                                                    startActivity(new Intent(getApplicationContext(), PrimeraActivity.class));
+                                                    startActivity(new Intent(getApplicationContext(), TabbedInicioActivity.class));
                                                 } else {
                                                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
                                                     i.putExtra("us", u);

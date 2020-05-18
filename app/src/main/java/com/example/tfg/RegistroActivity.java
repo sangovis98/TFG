@@ -53,9 +53,9 @@ public class RegistroActivity extends AppCompatActivity {
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
-                    Toast.makeText(getApplicationContext(), "El usuario fue creado", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "El usuario fue creado", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getApplicationContext(), "El usuario salió de la sesión", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(), "El usuario salió de la sesión", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -105,9 +105,7 @@ public class RegistroActivity extends AppCompatActivity {
 
                     db.collection("usuarios").document(user.getUid()).set(u);
 
-                    Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                    //i.putExtra("us", u);
-                    startActivity(i);
+                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                 }
             }
         });

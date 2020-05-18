@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.tfg.DiaDietaActivity;
 import com.example.tfg.R;
 import com.example.tfg.adapters.AdapterDiaDieta;
@@ -49,12 +50,16 @@ public class ListaDietasFragment extends Fragment implements OnItemListener {
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private Usuario u;
+    private LottieAnimationView lottieAnimationView;
 
     LinearLayoutManager linearLayoutManager;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              final ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_lista_dietas, container, false);
+
+        lottieAnimationView = root.findViewById(R.id.loadingDietas);
+        lottieAnimationView.playAnimation();
 
         //Inicializamos variables correspondientes a la base de datos y al recycler view
         db = FirebaseFirestore.getInstance();
@@ -154,6 +159,8 @@ public class ListaDietasFragment extends Fragment implements OnItemListener {
                             diaDieta = ds.toObject(DiaDieta.class);
                             dietasDias.add(diaDieta);
                         }
+                        lottieAnimationView.cancelAnimation();
+                        lottieAnimationView.setVisibility(View.GONE);
                         initRecylerView();
                     }
                 });

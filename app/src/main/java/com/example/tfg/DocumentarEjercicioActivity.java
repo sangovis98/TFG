@@ -41,6 +41,7 @@ public class DocumentarEjercicioActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private int de = 0;
+    private int ejsEnt = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,10 +98,15 @@ public class DocumentarEjercicioActivity extends AppCompatActivity {
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 EntrenoSemana es = documentSnapshot.toObject(EntrenoSemana.class);
 
-                                for (Ejercicio eje : es.getEjEntrenoSemanal()) {
-                                    ejsDieta.add(eje);
+                                if (es.getEjEntrenoSemanal() != null) {
+                                    ejsEnt = es.getEjEntrenoSemanal().size();
+                                    for (Ejercicio eje : es.getEjEntrenoSemanal()) {
+                                        ejsDieta.add(eje);
+                                    }
                                 }
-                                Ejercicio ejer = new Ejercicio(ejsDieta.size() + 1, etNombreEjercicio.getText().toString(), 0, 0, sGrupoMuscular.getSelectedItem().toString(), nDia);
+
+
+                                Ejercicio ejer = new Ejercicio(ejsEnt + 1, etNombreEjercicio.getText().toString(), 0, 0, sGrupoMuscular.getSelectedItem().toString(), nDia);
 
                                 Map<String, Object> map = new HashMap<>();
                                 map.put("ejEntrenoSemanal", FieldValue.arrayUnion(ejer));

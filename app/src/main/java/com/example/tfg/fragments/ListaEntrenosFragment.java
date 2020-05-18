@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.tfg.DiasSemanaEntrenosActivity;
 import com.example.tfg.R;
 import com.example.tfg.adapters.AdapterEntrenosSemanales;
@@ -47,11 +48,14 @@ public class ListaEntrenosFragment extends Fragment implements OnItemListener {
     private String nombreDialog;
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    private LottieAnimationView lottieAnimationView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_lista_entrenos, container, false);
 
+        lottieAnimationView = root.findViewById(R.id.loadingEntrenos);
+        lottieAnimationView.playAnimation();
         recyclerView = root.findViewById(R.id.listaEntrenosSemanales);
 
         db = FirebaseFirestore.getInstance();
@@ -121,6 +125,8 @@ public class ListaEntrenosFragment extends Fragment implements OnItemListener {
                             entrenoSemana = ds.toObject(EntrenoSemana.class);
                             entrenosSemanales.add(entrenoSemana);
                         }
+                        lottieAnimationView.cancelAnimation();
+                        lottieAnimationView.setVisibility(View.GONE);
                         initRecylerView();
                     }
                 });

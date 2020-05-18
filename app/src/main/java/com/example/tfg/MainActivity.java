@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.help:
+            case R.id.about:
                 Toast.makeText(getApplicationContext(), "Help", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.logout:

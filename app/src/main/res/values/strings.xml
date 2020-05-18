@@ -1,6 +1,13 @@
 <resources>
-    <string name="app_name">TFG</string>
+    <string name="app_name">TrainFit</string>
     <string name="title_home">Dietas</string>
     <string name="title_dashboard">Ejercicios</string>
     <string name="title_notifications">Perfil</string>
+    <string name="title_activity_tabbed_inicio">TabbedInicioActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

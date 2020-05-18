@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,11 +85,44 @@ public class AdapterDiaDieta extends RecyclerView.Adapter<AdapterDiaDieta.ViewHo
                 u = documentSnapshot.toObject(Usuario.class);
 
                 holder.pbProteinas.setMax((int) u.getTotalProteinas());
-                holder.pbProteinas.setProgress((int) ((finalProteinas * 100) / u.getTotalProteinas()));
-                holder.pbHidratos.setMax((int) u.getConsumoHidratos());
-                holder.pbHidratos.setProgress((int) ((finalHidratos * 100) / u.getTotalHidratos()));
+                holder.pbProteinas.setProgress((int) finalProteinas);
+                holder.pbHidratos.setMax((int) u.getTotalHidratos());
+                holder.pbHidratos.setProgress((int) finalHidratos);
                 holder.pbGrasas.setMax((int) u.getTotalGrasas());
-                holder.pbGrasas.setProgress((int) ((finalGrasas * 100) / u.getTotalGrasas()));
+                holder.pbGrasas.setProgress((int) finalGrasas);
+
+                if (holder.pbProteinas.getProgress() > holder.pbProteinas.getMax() * 0.9) {
+                    holder.pbProteinas.getProgressDrawable().setColorFilter(
+                            Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+                } else if (holder.pbProteinas.getProgress() < holder.pbProteinas.getMax() && holder.pbProteinas.getProgress() > holder.pbProteinas.getMax() * 0.7) {
+                    holder.pbProteinas.getProgressDrawable().setColorFilter(
+                            Color.rgb(255, 170, 0), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else {
+                    holder.pbProteinas.getProgressDrawable().setColorFilter(
+                            Color.rgb(3, 169, 244), android.graphics.PorterDuff.Mode.SRC_IN);
+                }
+
+                if (holder.pbHidratos.getProgress() > holder.pbHidratos.getMax() * 0.9) {
+                    holder.pbHidratos.getProgressDrawable().setColorFilter(
+                            Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+                } else if (holder.pbHidratos.getProgress() < holder.pbHidratos.getMax() && holder.pbHidratos.getProgress() > holder.pbHidratos.getMax() * 0.7) {
+                    holder.pbHidratos.getProgressDrawable().setColorFilter(
+                            Color.rgb(255, 170, 0), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else {
+                    holder.pbHidratos.getProgressDrawable().setColorFilter(
+                            Color.rgb(3, 169, 244), android.graphics.PorterDuff.Mode.SRC_IN);
+                }
+
+                if (holder.pbGrasas.getProgress() > holder.pbGrasas.getMax() * 0.9) {
+                    holder.pbGrasas.getProgressDrawable().setColorFilter(
+                            Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+                } else if (holder.pbGrasas.getProgress() < holder.pbGrasas.getMax() && holder.pbGrasas.getProgress() > holder.pbGrasas.getMax() * 0.7) {
+                    holder.pbGrasas.getProgressDrawable().setColorFilter(
+                            Color.rgb(255, 170, 0), android.graphics.PorterDuff.Mode.SRC_IN);
+                } else {
+                    holder.pbGrasas.getProgressDrawable().setColorFilter(
+                            Color.rgb(3, 169, 244), android.graphics.PorterDuff.Mode.SRC_IN);
+                }
             }
         });
 

@@ -12,13 +12,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PrimeraActivity"></activity>
-        <activity android:name=".EditarTablaDeEntreno" />
-        <activity android:name=".EditarDietaActivity" />
-        <activity android:name=".EditarObjetivoActivity" />
-        <activity android:name=".EditarInfoPersonalActivity" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".TabbedInicioActivity"
+            android:label="@string/title_activity_tabbed_inicio"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".SplashActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,6 +25,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".EditarTablaDeEntreno" />
+        <activity android:name=".EditarDietaActivity" />
+        <activity android:name=".EditarObjetivoActivity" />
+        <activity android:name=".EditarInfoPersonalActivity" />
+        <activity android:name=".LoginActivity" />
         <activity android:name=".RegistroActivity" />
         <activity android:name=".DocumentarEjercicioActivity" />
         <activity android:name=".ListaEjerciciosActivity" />

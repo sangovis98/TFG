@@ -60,6 +60,7 @@
                     android:id="@+id/txtItemGramos"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10sp"
                     android:gravity="center"
                     android:text="TextView"
                     android:textSize="10sp" />
