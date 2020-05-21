@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -28,6 +29,10 @@ public class EditarInfoPersonalActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
     private Usuario usuario;
+
+    private double tmb, peso, objetivo, actividad, normocalorica, totalKcal;
+    private String sexo, progreso;
+    private int altura, edad;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,11 +107,15 @@ public class EditarInfoPersonalActivity extends AppCompatActivity {
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         usuario = documentSnapshot.toObject(Usuario.class);
 
+                        calculoTmb();
+                        calculoNormocalorica();
+                        calculoTotalKcal();
                         usuario.setSexo(spinnerSexo.getSelectedItem().toString());
                         usuario.setActividad(spinnerActividad.getSelectedItem().toString());
                         usuario.setNombre(etNombrePerfil.getText().toString());
                         usuario.setAltura(Integer.parseInt(etPerfilAltura.getText().toString()));
                         usuario.setEdad(Integer.parseInt(etPerfilEdad.getText().toString()));
+                        usuario.setTotalKcal(totalKcal);
 
                         establecerUsuario();
                     }
@@ -119,5 +128,45 @@ public class EditarInfoPersonalActivity extends AppCompatActivity {
         db.collection("usuarios")
                 .document(firebaseUser.getUid())
                 .set(usuario, SetOptions.merge());
+    }
+
+    public void calculoTmb() {
+        if (usuario.getSexo().equals("Hombre") || usuario.getSexo().equals("Otro")) {
+            tmb = 10 * usuario.getPeso() + 6.25 * usuario.getAltura() - 5 * usuario.getEdad() + 5;
+        } else {
+            tmb = 10 * usuario.getPeso() + 6.25 - 5 * usuario.getEdad() - 161;
+        }
+    }
+
+    public void calculoNormocalorica() {
+        if (spinnerActividad.getSelectedItem().toString().equals("Ninguna")) {
+            actividad = 1.375;
+        } else if (spinnerActividad.getSelectedItem().toString().equals("Ligera (1-3 día/semana)")) {
+            actividad = 1.55;
+        } else if (spinnerActividad.getSelectedItem().toString().equals("Moderada (3-5 día/semana)")) {
+            actividad = 1.725;
+        } else if (spinnerActividad.getSelectedItem().toString().equals("Alta (6-7 día/semana)")) {
+            actividad = 1.9;
+        }
+
+        normocalorica = tmb * actividad;
+    }
+
+    public void calculoTotalKcal() {
+        if (usuario.getPorcentaje().equals("-10% (Bajada lenta asegurando masa muscular)")) {
+            totalKcal = normocalorica - (normocalorica * 0.1);
+        } else if (usuario.getPorcentaje().equals("-20% (Bajada media con riesgo mínima de pérdida de masa muscular)")) {
+            totalKcal = normocalorica - (normocalorica * 0.2);
+        } else if (usuario.getPorcentaje().equals("-30% (Bajada rápida pero con alto riesgo de pérdida de masa muscular)")) {
+            totalKcal = normocalorica - (normocalorica * 0.3);
+        } else if (usuario.getPorcentaje().equals("+10% (Subida lenta si tienes tendencia a engordar)")) {
+            totalKcal = normocalorica + (normocalorica * 0.1);
+        } else if (usuario.getPorcentaje().equals("+15% (Subida moderada)")) {
+            totalKcal = normocalorica + (normocalorica * 0.15);
+        } else if (usuario.getPorcentaje().equals("+20% (Subida rápida si te cuesta coger peso)")) {
+            totalKcal = normocalorica + (normocalorica * 0.2);
+        } else {
+            Toast.makeText(getApplicationContext(), "Debes escoger un porcentaje", Toast.LENGTH_SHORT).show();
+        }
     }
 }
