@@ -39,6 +39,10 @@ public class TabbedFragment3 extends Fragment {
     private FirebaseUser firebaseUser;
     private FirebaseAuth firebaseAuth;
     private Spinner sActividadPrimeraVez;
+    //Variables de cálculo fitness
+    private double tmb, peso, objetivo, actividad, normocalorica, totalKcal;
+    private String sexo, progreso;
+    private int altura, edad;
 
     EditText etPesoPrimeraVez, etAlturaPrimeraVez, etEdadPrimeraVez, etObjetivoPrimeraVez;
     Spinner sSexoPrimeraVez, sProgreso;
@@ -88,7 +92,7 @@ public class TabbedFragment3 extends Fragment {
         db = FirebaseFirestore.getInstance();
 
         sActividadPrimeraVez = root.findViewById(R.id.sActividadPrimeraVez);
-        ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(getContext(), R.array.actividad, android.R.layout.simple_spinner_dropdown_item);
+        final ArrayAdapter<CharSequence> adapter3 = ArrayAdapter.createFromResource(getContext(), R.array.actividad, android.R.layout.simple_spinner_dropdown_item);
         sActividadPrimeraVez.setAdapter(adapter3);
 
         etPesoPrimeraVez = getActivity().findViewById(R.id.etPesoPrimeraVez);
@@ -108,15 +112,47 @@ public class TabbedFragment3 extends Fragment {
                         !etEdadPrimeraVez.getText().toString().trim().equals("") &&
                         !etObjetivoPrimeraVez.getText().toString().trim().equals("")) {
 
+                    //Relleno de variables
+                    peso = Double.parseDouble(etPesoPrimeraVez.getText().toString().trim());
+                    altura = Integer.parseInt(etAlturaPrimeraVez.getText().toString().trim());
+                    edad = Integer.parseInt(etEdadPrimeraVez.getText().toString().trim());
+                    objetivo = Double.parseDouble(etObjetivoPrimeraVez.getText().toString().trim());
+                    sexo = sSexoPrimeraVez.getSelectedItem().toString();
+                    progreso = sProgreso.getSelectedItem().toString();
+
                     Map<String, Object> update = new HashMap<>();
-                    update.put("peso", Double.parseDouble(etPesoPrimeraVez.getText().toString()));
-                    update.put("altura", Integer.parseInt(etAlturaPrimeraVez.getText().toString()));
-                    update.put("edad", Integer.parseInt(etEdadPrimeraVez.getText().toString()));
-                    update.put("objetivo", Double.parseDouble(etObjetivoPrimeraVez.getText().toString()));
-                    update.put("porcentaje", sProgreso.getSelectedItem().toString());
+                    update.put("peso", peso);
+                    update.put("altura", altura);
+                    update.put("edad", edad);
+                    update.put("objetivo", objetivo);
+                    update.put("porcentaje", progreso);
                     update.put("actividad", sActividadPrimeraVez.getSelectedItem().toString());
-                    update.put("sexo", sSexoPrimeraVez.getSelectedItem().toString());
+                    update.put("sexo", sexo);
                     update.put("primeraVez", false);
+
+                    calculoTmb();
+
+                    calculoNormocalorica();
+
+                    calculoTotalKcal();
+
+                    update.put("totalKcal", (int) totalKcal);
+
+                    double pG, gG, hG, pKcal, gKcal, hKcal;
+
+                    pG = 2 * Integer.parseInt(etPesoPrimeraVez.getText().toString());
+                    pKcal = pG * 4;
+                    gG = 1 * Integer.parseInt(etPesoPrimeraVez.getText().toString());
+                    gKcal = gG * 9;
+                    hKcal = totalKcal - (pKcal + gKcal);
+                    hG = hKcal / 4;
+
+                    update.put("consumoProteinas", 2);
+                    update.put("consumoHidratos", 0);
+                    update.put("consumoGrasas", 1);
+                    update.put("totalProteinas", pG);
+                    update.put("totalHidratos", hG);
+                    update.put("totalGrasas", gG);
 
                     db.collection("usuarios").document(firebaseUser.getUid()).set(update, SetOptions.merge());
                     startActivity(new Intent(getContext(), MainActivity.class));
@@ -128,6 +164,46 @@ public class TabbedFragment3 extends Fragment {
         });
 
         return root;
+    }
+
+    public void calculoTmb() {
+        if (sexo.equals("Hombre") || sexo.equals("Otro")) {
+            tmb = 10 * peso + 6.25 * altura - 5 * edad + 5;
+        } else {
+            tmb = 10 * peso + 6.25 - 5 * edad - 161;
+        }
+    }
+
+    public void calculoNormocalorica() {
+        if (sActividadPrimeraVez.getSelectedItem().toString().equals("Ninguna")) {
+            actividad = 1.375;
+        } else if (sActividadPrimeraVez.getSelectedItem().toString().equals("Ligera (1-3 día/semana)")) {
+            actividad = 1.55;
+        } else if (sActividadPrimeraVez.getSelectedItem().toString().equals("Moderada (3-5 día/semana)")) {
+            actividad = 1.725;
+        } else if (sActividadPrimeraVez.getSelectedItem().toString().equals("Alta (6-7 día/semana)")) {
+            actividad = 1.9;
+        }
+
+        normocalorica = tmb * actividad;
+    }
+
+    public void calculoTotalKcal() {
+        if (progreso.equals("-10% (Bajada lenta asegurando masa muscular)")) {
+            totalKcal = normocalorica - (normocalorica * 0.1);
+        } else if (progreso.equals("-20% (Bajada media con riesgo mínima de pérdida de masa muscular)")) {
+            totalKcal = normocalorica - (normocalorica * 0.2);
+        } else if (progreso.equals("-30% (Bajada rápida pero con alto riesgo de pérdida de masa muscular)")) {
+            totalKcal = normocalorica - (normocalorica * 0.3);
+        } else if (progreso.equals("+10% (Subida lenta si tienes tendencia a engordar)")) {
+            totalKcal = normocalorica + (normocalorica * 0.1);
+        } else if (progreso.equals("+15% (Subida moderada)")) {
+            totalKcal = normocalorica + (normocalorica * 0.15);
+        } else if (progreso.equals("+20% (Subida rápida si te cuesta coger peso)")) {
+            totalKcal = normocalorica + (normocalorica * 0.2);
+        } else {
+            Toast.makeText(getContext(), "Debes escoger un porcentaje", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public interface OnFragmentInteractionListener {

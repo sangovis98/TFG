@@ -86,14 +86,14 @@ public class TabbedFragment2 extends Fragment {
             public void afterTextChanged(Editable s) {
                 EditText etPeso = getActivity().findViewById(R.id.etPesoPrimeraVez);
 
-                if (Double.parseDouble(etPeso.getText().toString()) > Double.parseDouble(etObjetivoPrimeraVez.getText().toString())) {
-                    ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.porcentajeBajar, android.R.layout.simple_spinner_dropdown_item);
-                    sProgreso.setAdapter(adapter);
-                } else if (Double.parseDouble(etPeso.getText().toString()) < Double.parseDouble(etObjetivoPrimeraVez.getText().toString())) {
-                    ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.porcentajeSubir, android.R.layout.simple_spinner_dropdown_item);
-                    sProgreso.setAdapter(adapter);
-                } else {
-
+                if (!etObjetivoPrimeraVez.getText().toString().trim().equals("") && !etPeso.getText().toString().trim().equals("")) {
+                    if (Double.parseDouble(etPeso.getText().toString()) > Double.parseDouble(s.toString())) {
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.porcentajeBajar, android.R.layout.simple_spinner_dropdown_item);
+                        sProgreso.setAdapter(adapter);
+                    } else if (Double.parseDouble(etPeso.getText().toString()) < Double.parseDouble(etObjetivoPrimeraVez.getText().toString())) {
+                        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(), R.array.porcentajeSubir, android.R.layout.simple_spinner_dropdown_item);
+                        sProgreso.setAdapter(adapter);
+                    }
                 }
             }
         });
