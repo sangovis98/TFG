@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -21,6 +20,7 @@ import com.example.tfg.modelo.Ejercicio;
 import com.example.tfg.modelo.EntrenoSemana;
 import com.example.tfg.modelo.Usuario;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -91,9 +91,9 @@ public class PerfilFragment extends Fragment {
                 entrenoPerfilTE.setText(usuario.getEntrenoSemanaEnUso());
 
 
-                dietaProteinas.setText(String.valueOf(Math.round(usuario.getTotalProteinas() * 100) / 100.f));
-                dietaHidratos.setText(String.valueOf(Math.round(usuario.getTotalHidratos() * 100) / 100.f));
-                dietaGrasas.setText(String.valueOf(Math.round(usuario.getTotalGrasas() * 100) / 100.f));
+                dietaProteinas.setText(Math.round(usuario.getTotalProteinas() * 100) / 100.f + "gr");
+                dietaHidratos.setText(Math.round(usuario.getTotalHidratos() * 100) / 100.f + "gr");
+                dietaGrasas.setText(Math.round(usuario.getTotalGrasas() * 100) / 100.f + "gr");
 
                 if (usuario.getfInicio() == null) {
                     fInicio.setText("No establecida");
@@ -172,7 +172,8 @@ public class PerfilFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (usuario.getEntrenoSemanaEnUso().equals("")) {
-                    Toast.makeText(getActivity(), "No tienes un entreno en uso", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(getView(), R.string.no_entreno, Snackbar.LENGTH_SHORT)
+                            .show();
                 } else {
                     startActivity(new Intent(getContext(), EditarTablaDeEntreno.class));
                 }

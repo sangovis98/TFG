@@ -21,6 +21,7 @@ import com.example.tfg.interfaces.OnItemListener;
 import com.example.tfg.modelo.DiaDieta;
 import com.example.tfg.modelo.Producto;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -110,7 +111,7 @@ public class DiaDietaActivity extends AppCompatActivity implements OnItemListene
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         if (productosDiaDieta == null){
-            Toast.makeText(getApplicationContext(), "Su dieta no tiene productos", Toast.LENGTH_SHORT).show();
+            Snackbar.make(recyclerView, "Su dieta no tiene productos", Snackbar.LENGTH_SHORT).show();
         }else {
             adapterProductos = new AdapterProductos(productosDiaDieta, this, DiaDietaActivity.this, diaDieta);
             recyclerView.setAdapter(adapterProductos);

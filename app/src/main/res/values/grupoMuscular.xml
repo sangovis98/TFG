@@ -4,5 +4,8 @@
         <item>Pecho</item>
         <item>Espalda</item>
         <item>Piernas</item>
+        <item>Hombros</item>
+        <item>Brazos</item>
+        <item>Pantorrillas</item>
     </string-array>
 </resources>

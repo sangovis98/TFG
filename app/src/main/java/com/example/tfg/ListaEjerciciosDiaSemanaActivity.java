@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -21,6 +20,7 @@ import com.example.tfg.interfaces.OnItemListener;
 import com.example.tfg.modelo.Ejercicio;
 import com.example.tfg.modelo.EntrenoSemana;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -84,7 +84,7 @@ public class ListaEjerciciosDiaSemanaActivity extends AppCompatActivity implemen
         recyclerView.setLayoutManager(new GridLayoutManager(getApplicationContext(), 2));
         recyclerView.setHasFixedSize(true);
         if (ejsSegunDia == null){
-            Toast.makeText(getApplicationContext(), "No tienes ejercicios en este día", Toast.LENGTH_SHORT).show();
+            Snackbar.make(recyclerView, "No tienes ejercicios en este día", Snackbar.LENGTH_SHORT).show();
         }else {
             adapterEjercicios = new AdapterEjercicios(ejsSegunDia, this);
             recyclerView.setAdapter(adapterEjercicios);
@@ -134,7 +134,7 @@ public class ListaEjerciciosDiaSemanaActivity extends AppCompatActivity implemen
         series.setInputType(InputType.TYPE_CLASS_TEXT);
         series.setHint("Series");
         layout.addView(series);
-
+        layout.setPadding(60, 60, 60, 60);
         dialog.setView(layout);
 
         dialog.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {

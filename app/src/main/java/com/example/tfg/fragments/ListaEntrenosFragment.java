@@ -4,12 +4,17 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -70,9 +75,35 @@ public class ListaEntrenosFragment extends Fragment implements OnItemListener {
                 AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
                 dialog.setTitle("Nombre del entreno semanal");
 
+                LinearLayout linearLayout = new LinearLayout(getContext());
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+                linearLayout.setPadding(60, 0, 60, 0);
+                final int max = 15;
+                final TextView tv = new TextView(getContext());
+                tv.setText("0/" + max);
                 final EditText editText = new EditText(getActivity());
                 editText.setInputType(InputType.TYPE_CLASS_TEXT);
-                dialog.setView(editText);
+                editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(max)});
+                editText.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (s.toString().length() <= max) {
+                            tv.setText(s.toString().length() + "/" + max);
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                    }
+                });
+
+                linearLayout.addView(editText);
+                linearLayout.addView(tv);
+                dialog.setView(linearLayout);
 
                 dialog.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {
                     @Override

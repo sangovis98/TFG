@@ -43,7 +43,7 @@ public class AdapterEntrenosSemanales extends RecyclerView.Adapter<AdapterEntren
     public void onBindViewHolder(@NonNull final ViewHolderEntrenoDieta holder, final int position) {
         holder.nEntreno.setText(listItems.get(position).getNombre());
 
-        int pierna = 0, pecho = 0, espalda = 0;
+        int pierna = 0, pecho = 0, espalda = 0, brazos = 0, pantorrillas = 0, hombros = 0;
         //Obtengo los grupos musculares de cada ejercicio
         if (listItems.get(position).getEjEntrenoSemanal() != null) {
             for (Ejercicio e : listItems.get(position).getEjEntrenoSemanal()) {
@@ -51,8 +51,14 @@ public class AdapterEntrenosSemanales extends RecyclerView.Adapter<AdapterEntren
                     pierna++;
                 } else if (e.getGrupo().equals("Espalda")) {
                     espalda++;
-                } else {
+                } else if (e.getGrupo().equals("Pecho")) {
                     pecho++;
+                } else if (e.getGrupo().equals("Hombros")) {
+                    hombros++;
+                } else if (e.getGrupo().equals("Brazos")) {
+                    brazos++;
+                } else {
+                    pantorrillas++;
                 }
             }
         }
@@ -69,7 +75,7 @@ public class AdapterEntrenosSemanales extends RecyclerView.Adapter<AdapterEntren
 
     public class ViewHolderEntrenoDieta extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView nEntreno, txtItemEntrenoGrupoPecho, txtItemEntrenoGrupoPiernas, txtItemEntrenoGrupoEspalda;
+        TextView nEntreno, txtItemEntrenoGrupoPecho, txtItemEntrenoGrupoPiernas, txtItemEntrenoGrupoEspalda, txtItemEntrenoPantorrilas, getTxtItemEntrenoGrupoHombros, txtItemEntrenoBrazos;
 
         public ViewHolderEntrenoDieta(@NonNull View itemView, OnItemListener onEntrenoSemanalListener) {
             super(itemView);
@@ -77,6 +83,7 @@ public class AdapterEntrenosSemanales extends RecyclerView.Adapter<AdapterEntren
             txtItemEntrenoGrupoPecho = itemView.findViewById(R.id.txtItemEntrenoGrupoPecho);
             txtItemEntrenoGrupoEspalda = itemView.findViewById(R.id.txtItemEntrenoGrupoEspalda);
             txtItemEntrenoGrupoPiernas = itemView.findViewById(R.id.txtItemEntrenoGrupoPiernas);
+            getTxtItemEntrenoGrupoHombros = itemView.findViewById(R.id.txtItemEntrenoGrupoHombros);
             itemView.setOnClickListener(this);
         }
 

@@ -157,6 +157,7 @@ public class ListaProductosActivity extends AppCompatActivity implements OnItemL
         layout.setOrientation(LinearLayout.VERTICAL);
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         layout.addView(editText);
+        layout.setPadding(60, 0, 60, 0);
 
         AlertDialog.Builder dialog = new AlertDialog.Builder(ListaProductosActivity.this);
         dialog.setView(layout);
