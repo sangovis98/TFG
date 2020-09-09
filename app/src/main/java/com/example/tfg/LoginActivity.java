@@ -65,6 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (user != null) {
                     if (!user.isEmailVerified()) {
                         Toast.makeText(getApplicationContext(), "Verifique la cuenta en su correo electrónico", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), "Y reinicie la app", Toast.LENGTH_LONG).show();
                     } else if (user.isEmailVerified()) {
                         db.collection("usuarios")
                                 .document(user.getUid())

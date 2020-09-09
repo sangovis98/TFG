@@ -109,7 +109,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:ems="10"
-            android:hint="Contraseña"
+            android:hint="Contraseña (min 6 caracteres)"
             android:inputType="textPassword"
             android:textColor="#FFFFFF"
             android:textColorHint="#BEFFFFFF"

@@ -88,8 +88,8 @@ public class RegistroActivity extends AppCompatActivity {
     }
 
     public void singUp(View view) {
-        String username = regEmail.getText().toString().trim();
-        String pass = regPass.getText().toString().trim();
+        String username = regEmail.getText().toString().toLowerCase().trim();
+        String pass = regPass.getText().toString().toLowerCase().trim();
 
         firebaseAuth.createUserWithEmailAndPassword(username, pass).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
